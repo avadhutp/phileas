@@ -11,8 +11,9 @@ type common struct {
 }
 
 type instagram struct {
-	Secret string `ini:"secret"`
-	Token  string `ini:"access_token"`
+	ClientID string `ini:"client_id"`
+	Secret   string `ini:"secret"`
+	Token    string `ini:"access_token"`
 }
 
 // Cfg Config map for phileas.ini
