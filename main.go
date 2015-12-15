@@ -13,7 +13,7 @@ func main() {
 	cfg := getConfig()
 	cfg.dump()
 
-	service := getService()
+	service := getService(cfg)
 	service.Run(":" + cfg.Common.Port)
 }
 

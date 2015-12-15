@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getService() *gin.Engine {
+func getService(cfg *Cfg) *gin.Engine {
 	s := gin.New()
 	s.Use(gin.Logger())
 
