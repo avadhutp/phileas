@@ -7,7 +7,7 @@ import (
 )
 
 type common struct {
-	Port int `ini:"port"`
+	Port string `ini:"port"`
 }
 
 type instagram struct {
