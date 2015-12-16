@@ -22,7 +22,7 @@ func setup(cmd *cobra.Command, args []string) {
 	logger.Info(fmt.Sprintf("Setting up Phileas; config at %s", cfgPath))
 
 	cfg := lib.NewCfg(cfgPath)
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", cfg.Mysql.Username, cfg.Mysql.Password, cfg.Mysql.Host, cfg.Mysql.Port, cfg.Mysql.Database)
+	connStr := lib.GetDBConnString(cfg)
 
 	if db, err := gorm.Open("mysql", connStr); err != nil {
 		panic(err)
