@@ -1,17 +1,37 @@
 package lib
 
 import (
+	"fmt"
+
 	"github.com/gedex/go-instagram/instagram"
 )
 
-var (
-	instaAPI *instagram.Client
-)
+type InstaAPI struct {
+	client *instagram.Client
+}
 
-func initInstaAPI(cfg *Cfg) {
-	instaAPI = instagram.NewClient(nil)
+// NewInstaAPI Provider for InstaAPI
+func NewInstaAPI(cfg *Cfg) *InstaAPI {
+	i := new(InstaAPI)
 
-	instaAPI.ClientID = cfg.Instagram.ClientID
-	instaAPI.ClientSecret = cfg.Instagram.Secret
-	instaAPI.AccessToken = cfg.Instagram.Token
+	i.client = instagram.NewClient(nil)
+	i.client.ClientID = cfg.Instagram.ClientID
+	i.client.ClientSecret = cfg.Instagram.Secret
+	i.client.AccessToken = cfg.Instagram.Token
+
+	return i
+}
+
+func (i *InstaAPI) SaveLikes() {
+	media, _, _ := i.client.Users.LikedMedia(nil)
+
+	for _, m := range media {
+		if i.isLocationOk(&m) {
+			logger.Info(fmt.Sprintf("ID: %s; Location: %s", m.ID, m.Location.Name))
+		}
+	}
+}
+
+func (i *InstaAPI) isLocationOk(media *instagram.Media) bool {
+	return media.Location != nil
 }

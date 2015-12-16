@@ -13,6 +13,9 @@ func main() {
 	cfg := lib.NewCfg("/etc/phileas.ini")
 	cfg.Dump()
 
+	instaAPI := lib.NewInstaAPI(cfg)
+	go instaAPI.SaveLikes()
+
 	service := lib.NewService(cfg)
 	service.Run(":" + cfg.Common.Port)
 }

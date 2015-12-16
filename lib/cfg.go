@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	logger = log.WithFields(log.Fields{"package": "lib"})
+	logger = log.WithFields(log.Fields{"file": "cfg.go"})
 )
 
 type common struct {
