@@ -21,5 +21,7 @@ var (
 
 func init() {
 	RootCmd.Flags().StringVarP(&cfgPath, "config", "c", "/etc/phileas.ini", "Absolute path to the config file. Refer to the online documentation at github.com/avadhutp/philease for more info")
+
 	RootCmd.AddCommand(setupCmd)
+	RootCmd.AddCommand(startCmd)
 }
