@@ -1,8 +1,9 @@
 package main
 
 import (
+	"github.com/avadhutp/phileas/cmd"
+
 	log "github.com/Sirupsen/logrus"
-	"github.com/avadhutp/phileas/lib"
 )
 
 var (
@@ -10,12 +11,7 @@ var (
 )
 
 func main() {
-	cfg := lib.NewCfg("/etc/phileas.ini")
-	cfg.Dump()
-
-	instaAPI := lib.NewInstaAPI(cfg)
-	go instaAPI.SaveLikes()
-
-	service := lib.NewService(cfg)
-	service.Run(":" + cfg.Common.Port)
+	if err := cmd.RootCmd.Execute(); err != nil {
+		panic(err)
+	}
 }
