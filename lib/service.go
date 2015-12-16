@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"net/http"
@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getService(cfg *Cfg) *gin.Engine {
+// NewService Provides the gonic gin service
+func NewService(cfg *Cfg) *gin.Engine {
 	s := gin.New()
 	s.Use(gin.Logger())
 

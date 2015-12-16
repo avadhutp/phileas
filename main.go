@@ -2,7 +2,7 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/go-ini/ini"
+	"github.com/avadhutp/phileas/lib"
 )
 
 var (
@@ -10,20 +10,9 @@ var (
 )
 
 func main() {
-	cfg := getConfig()
-	cfg.dump()
+	cfg := lib.NewCfg("/etc/phileas.ini")
+	cfg.Dump()
 
-	service := getService(cfg)
+	service := lib.NewService(cfg)
 	service.Run(":" + cfg.Common.Port)
-}
-
-func getConfig() *Cfg {
-	var cfg Cfg
-	err := ini.MapTo(&cfg, "phileas.ini")
-
-	if err != nil {
-		logger.Error("Cannot parse the config file: ", err)
-	}
-
-	return &cfg
 }

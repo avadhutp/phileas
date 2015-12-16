@@ -1,16 +1,22 @@
-package main
+package lib
 
 import (
 	"fmt"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
+	"github.com/go-ini/ini"
+)
+
+var (
+	logger = log.WithFields(log.Fields{"package": "lib"})
 )
 
 type common struct {
 	Port string `ini:"port"`
 }
 
-type instagram struct {
+type instagramConfig struct {
 	ClientID string `ini:"client_id"`
 	Secret   string `ini:"secret"`
 	Token    string `ini:"access_token"`
@@ -18,11 +24,24 @@ type instagram struct {
 
 // Cfg Config map for phileas.ini
 type Cfg struct {
-	Common    common    `ini:"common"`
-	Instagram instagram `ini:"instagram"`
+	Common    common          `ini:"common"`
+	Instagram instagramConfig `ini:"instagram"`
 }
 
-func (cfg *Cfg) dump() {
+// NewCfg Gets the config struct
+func NewCfg(fileName string) *Cfg {
+	var cfg Cfg
+	err := ini.MapTo(&cfg, "phileas.ini")
+
+	if err != nil {
+		logger.Error("Cannot parse the config file: ", err)
+	}
+
+	return &cfg
+}
+
+// Dump Dumps the contents of the parsed config file, for debug purposes
+func (cfg *Cfg) Dump() {
 	dumpSection(cfg.Common, "Common")
 	dumpSection(cfg.Instagram, "Instagram")
 }
