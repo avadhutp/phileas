@@ -1,13 +1,19 @@
 package lib
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/gedex/go-instagram/instagram"
+	"github.com/jinzhu/gorm"
+)
+
+const (
+	waitBetweenChecks = 10 * time.Hour
 )
 
 type InstaAPI struct {
 	client *instagram.Client
+	db     *gorm.DB
 }
 
 // NewInstaAPI Provider for InstaAPI
@@ -18,17 +24,28 @@ func NewInstaAPI(cfg *Cfg) *InstaAPI {
 	i.client.ClientID = cfg.Instagram.ClientID
 	i.client.ClientSecret = cfg.Instagram.Secret
 	i.client.AccessToken = cfg.Instagram.Token
+	i.db = GetDB(cfg)
 
 	return i
 }
 
+// SaveLikes Inserts instagram likes into the DB
 func (i *InstaAPI) SaveLikes() {
-	media, _, _ := i.client.Users.LikedMedia(nil)
+	for {
+		media, _, _ := i.client.Users.LikedMedia(nil)
 
-	for _, m := range media {
-		if i.isLocationOk(&m) {
-			logger.Info(fmt.Sprintf("ID: %s; Location: %s", m.ID, m.Location.Name))
+		for _, m := range media {
+			if i.isLocationOk(&m) {
+				var e Entry
+				i.db.FirstOrCreate(&e, Entry{
+					Type:      "instagram",
+					VendorID:  m.ID,
+					Timestamp: m.CreatedTime,
+				})
+			}
 		}
+
+		time.Sleep(waitBetweenChecks)
 	}
 }
 
