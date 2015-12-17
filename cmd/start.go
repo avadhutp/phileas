@@ -24,6 +24,6 @@ func startPhileas(cmd *cobra.Command, args []string) {
 	service := lib.NewService(cfg)
 	instaAPI := lib.NewInstaAPI(cfg)
 
-	go instaAPI.SaveLikes()
+	go instaAPI.Backfill("")
 	service.Run(":" + cfg.Common.Port)
 }

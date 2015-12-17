@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/gedex/go-instagram/instagram"
@@ -9,6 +11,7 @@ import (
 
 const (
 	waitBetweenChecks = 10 * time.Hour
+	backfillWait      = 5 * time.Second
 )
 
 type InstaAPI struct {
@@ -35,17 +38,36 @@ func (i *InstaAPI) SaveLikes() {
 		media, _, _ := i.client.Users.LikedMedia(nil)
 
 		for _, m := range media {
-			if i.isLocationOk(&m) {
-				var e Entry
-				i.db.FirstOrCreate(&e, Entry{
-					Type:      "instagram",
-					VendorID:  m.ID,
-					Timestamp: m.CreatedTime,
-				})
-			}
+			i.saveMedia(m)
 		}
 
 		time.Sleep(waitBetweenChecks)
+	}
+}
+
+// Backfill Puts in historical likes
+func (i *InstaAPI) Backfill(maxLikeID string) {
+	media, after, _ := i.client.Users.LikedMedia(&instagram.Parameters{MaxID: maxLikeID})
+	afterURL, _ := url.Parse(after.NextURL)
+	maxLikeID = afterURL.Query().Get("max_like_id")
+
+	logger.Info(fmt.Sprintf("Media found: %d; max like: %s", len(media), maxLikeID))
+
+	time.Sleep(backfillWait)
+
+	if maxLikeID != "" {
+		i.Backfill(maxLikeID)
+	}
+}
+
+func (i *InstaAPI) saveMedia(m *instagram.Media) {
+	if i.isLocationOk(m) {
+		var e Entry
+		i.db.FirstOrCreate(&e, Entry{
+			Type:      "instagram",
+			VendorID:  m.ID,
+			Timestamp: m.CreatedTime,
+		})
 	}
 }
 
