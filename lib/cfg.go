@@ -10,7 +10,8 @@ var (
 )
 
 type common struct {
-	Port string `ini:"port"`
+	Port        string `ini:"port"`
+	MapquestKey string `ini:"mapquest_key"`
 }
 
 type instagramConfig struct {

@@ -20,9 +20,9 @@ type Location struct {
 	Name    string  `sql:"NOT NULL"`
 	Lat     float64 `sql:"NOT NULL"`
 	Long    float64 `sql:"NOT NULL"`
-	Country string  `sql:"NOT NULL"`
-	City    string  `sql:"NOT NULL"`
 	Address string  `sql:"NOT NULL;type:BLOB;"`
+	Country string
+	City    string
 }
 
 func getDBConnString(cfg *Cfg) string {

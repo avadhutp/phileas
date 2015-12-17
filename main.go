@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/avadhutp/phileas/cmd"
-
 	log "github.com/Sirupsen/logrus"
+	"github.com/avadhutp/phileas/cmd"
 )
 
 var (
