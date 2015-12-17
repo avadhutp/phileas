@@ -23,6 +23,7 @@ func setup(cmd *cobra.Command, args []string) {
 	cfg := lib.NewCfg(cfgPath)
 
 	db := lib.GetDB(cfg)
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&lib.Location{})
 	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&lib.Entry{})
 
 	logger.Info("Phileas is ready!")

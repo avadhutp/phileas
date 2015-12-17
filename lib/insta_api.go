@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"net/url"
 	"time"
 
@@ -38,7 +37,7 @@ func (i *InstaAPI) SaveLikes() {
 		media, _, _ := i.client.Users.LikedMedia(nil)
 
 		for _, m := range media {
-			i.saveMedia(m)
+			i.saveMedia(&m)
 		}
 
 		time.Sleep(waitBetweenChecks)
@@ -51,24 +50,41 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 	afterURL, _ := url.Parse(after.NextURL)
 	maxLikeID = afterURL.Query().Get("max_like_id")
 
-	logger.Info(fmt.Sprintf("Media found: %d; max like: %s", len(media), maxLikeID))
-
-	time.Sleep(backfillWait)
+	for _, m := range media {
+		i.saveMedia(&m)
+	}
 
 	if maxLikeID != "" {
+		time.Sleep(backfillWait)
 		i.Backfill(maxLikeID)
 	}
 }
 
 func (i *InstaAPI) saveMedia(m *instagram.Media) {
 	if i.isLocationOk(m) {
+		loc := i.saveLocation(m)
 		var e Entry
 		i.db.FirstOrCreate(&e, Entry{
-			Type:      "instagram",
-			VendorID:  m.ID,
-			Timestamp: m.CreatedTime,
+			Type:       "instagram",
+			VendorID:   m.ID,
+			Timestamp:  m.CreatedTime,
+			LocationID: loc.ID,
 		})
 	}
+}
+
+func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
+	var l Location
+	i.db.FirstOrCreate(&l, Location{
+		Name:    m.Location.Name,
+		Lat:     m.Location.Latitude,
+		Long:    m.Location.Longitude,
+		Country: "US",
+		City:    "As",
+		Address: "NA",
+	})
+
+	return &l
 }
 
 func (i *InstaAPI) isLocationOk(media *instagram.Media) bool {

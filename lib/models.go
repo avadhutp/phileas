@@ -8,11 +8,21 @@ import (
 
 // Entry Contains all of the instagrams likes indexed by required fields
 type Entry struct {
-	ID        int    `sql:"AUTO_INCREMENT"`
-	Type      string `sql:"NOT NULL"`
-	VendorID  string `sql:"NOT NULL"`
-	Location  string `sql:"NOT NULL"`
-	Timestamp int64  `sql:"NOT NULL"`
+	ID         int    `sql:"AUTO_INCREMENT"`
+	Type       string `sql:"NOT NULL"`
+	VendorID   string `sql:"NOT NULL"`
+	Timestamp  int64  `sql:"NOT NULL"`
+	LocationID int    `sql:"NOT NULL"`
+}
+
+type Location struct {
+	ID      int     `sql:"AUTO_INCREMENT"`
+	Name    string  `sql:"NOT NULL"`
+	Lat     float64 `sql:"NOT NULL"`
+	Long    float64 `sql:"NOT NULL"`
+	Country string  `sql:"NOT NULL"`
+	City    string  `sql:"NOT NULL"`
+	Address string  `sql:"NOT NULL;type:BLOB;"`
 }
 
 func getDBConnString(cfg *Cfg) string {
