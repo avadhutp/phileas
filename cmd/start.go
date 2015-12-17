@@ -21,8 +21,9 @@ func startPhileas(cmd *cobra.Command, args []string) {
 	logger.Info(fmt.Sprintf("Starting Phileas; config at %s", cfgPath))
 
 	cfg := lib.NewCfg(cfgPath)
+	db := lib.GetDB(cfg)
 	service := lib.NewService(cfg)
-	instaAPI := lib.NewInstaAPI(cfg)
+	instaAPI := lib.NewInstaAPI(cfg, db)
 
 	go instaAPI.Backfill("")
 	service.Run(":" + cfg.Common.Port)

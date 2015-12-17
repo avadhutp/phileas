@@ -19,14 +19,14 @@ type InstaAPI struct {
 }
 
 // NewInstaAPI Provider for InstaAPI
-func NewInstaAPI(cfg *Cfg) *InstaAPI {
+func NewInstaAPI(cfg *Cfg, db *gorm.DB) *InstaAPI {
 	i := new(InstaAPI)
 
 	i.client = instagram.NewClient(nil)
 	i.client.ClientID = cfg.Instagram.ClientID
 	i.client.ClientSecret = cfg.Instagram.Secret
 	i.client.AccessToken = cfg.Instagram.Token
-	i.db = GetDB(cfg)
+	i.db = db
 
 	return i
 }
@@ -76,12 +76,9 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
 	var l Location
 	i.db.FirstOrCreate(&l, Location{
-		Name:    m.Location.Name,
-		Lat:     m.Location.Latitude,
-		Long:    m.Location.Longitude,
-		Country: "US",
-		City:    "As",
-		Address: "NA",
+		Name: m.Location.Name,
+		Lat:  m.Location.Latitude,
+		Long: m.Location.Longitude,
 	})
 
 	return &l
