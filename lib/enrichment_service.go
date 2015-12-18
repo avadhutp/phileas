@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/JustinBeckwith/go-yelp/yelp"
+
 	"github.com/jasonwinn/geocoder"
 	"github.com/jinzhu/gorm"
 )
@@ -15,8 +17,9 @@ const (
 
 // EnrichmentService Goes systematically and enriches existing Location records with city + country information
 type EnrichmentService struct {
-	db   *gorm.DB
-	wait time.Duration
+	db         *gorm.DB
+	yelpClient *yelp.Client
+	wait       time.Duration
 }
 
 // NewEnrichmentService Provider for EnrichmentService
@@ -26,6 +29,14 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 	rg := new(EnrichmentService)
 	rg.db = db
 	rg.wait = waitBetweenEnrichment
+
+	auth := yelp.AuthOptions{
+		ConsumerKey:       cfg.Yelp.ConsumerKey,
+		ConsumerSecret:    cfg.Yelp.ConsumerSecret,
+		AccessToken:       cfg.Yelp.AccessToken,
+		AccessTokenSecret: cfg.Yelp.AccessTokenSecret,
+	}
+	rg.yelpClient = yelp.New(auth, nil)
 
 	return rg
 }
