@@ -17,16 +17,16 @@ type Entry struct {
 
 type Location struct {
 	ID      int     `sql:"AUTO_INCREMENT"`
-	Name    string  `sql:"NOT NULL"`
+	Name    string  `sql:"NOT NULL;type: varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci"`
 	Lat     float64 `sql:"NOT NULL"`
 	Long    float64 `sql:"NOT NULL"`
-	Address string  `sql:"NOT NULL;type:BLOB;"`
-	Country string
-	City    string
+	Address string  `sql:"type: text CHARACTER SET utf8 COLLATE utf8_general_ci"`
+	Country string  `sql:"type: varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci"`
+	City    string  `sql:"type: text CHARACTER SET utf8 COLLATE utf8_general_ci"`
 }
 
 func getDBConnString(cfg *Cfg) string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?character_set_server=utf8mb4&parseTime=True&loc=Local",
 		cfg.Mysql.Username,
 		cfg.Mysql.Password,
 		cfg.Mysql.Host,
