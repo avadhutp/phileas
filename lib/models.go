@@ -23,6 +23,7 @@ type Location struct {
 	Address string  `sql:"type: text CHARACTER SET utf8 COLLATE utf8_general_ci"`
 	Country string  `sql:"type: varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci"`
 	City    string  `sql:"type: text CHARACTER SET utf8 COLLATE utf8_general_ci"`
+	Type    string  `sql:"type: text CHARACTER SET utf8 COLLATE utf8_general_ci"`
 }
 
 func getDBConnString(cfg *Cfg) string {
