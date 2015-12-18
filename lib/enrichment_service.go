@@ -13,17 +13,17 @@ const (
 	waitBetweenEnrichment = 30 * time.Second
 )
 
-// ReverseGeocoder Goes systematically and enriches existing Location records with city + country information
-type ReverseGeocoder struct {
+// EnrichmentService Goes systematically and enriches existing Location records with city + country information
+type EnrichmentService struct {
 	db   *gorm.DB
 	wait time.Duration
 }
 
-// NewReverseGeocoder Provider for ReverseGeocoder
-func NewReverseGeocoder(cfg *Cfg, db *gorm.DB) *ReverseGeocoder {
+// NewEnrichmentService Provider for EnrichmentService
+func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 	geocoder.SetAPIKey(cfg.Common.MapquestKey)
 
-	rg := new(ReverseGeocoder)
+	rg := new(EnrichmentService)
 	rg.db = db
 	rg.wait = waitBetweenEnrichment
 
@@ -31,7 +31,7 @@ func NewReverseGeocoder(cfg *Cfg, db *gorm.DB) *ReverseGeocoder {
 }
 
 // Enrich Periodically check the DB and enrich records for city + country info
-func (rg *ReverseGeocoder) Enrich() {
+func (rg *EnrichmentService) EnrichLocation() {
 	for {
 		var locs []Location
 		rg.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
@@ -46,7 +46,7 @@ func (rg *ReverseGeocoder) Enrich() {
 	}
 }
 
-func (rg *ReverseGeocoder) updateLoc(geo *geocoder.Location, loc *Location) {
+func (rg *EnrichmentService) updateLoc(geo *geocoder.Location, loc *Location) {
 	if geo == nil || geo.CountryCode == "" {
 		return
 	}
@@ -64,7 +64,7 @@ func (rg *ReverseGeocoder) updateLoc(geo *geocoder.Location, loc *Location) {
 	rg.db.Save(loc)
 }
 
-func (rg *ReverseGeocoder) throttleWait(found int) {
+func (rg *EnrichmentService) throttleWait(found int) {
 	if found < enrichmentLimit {
 		rg.wait += waitBetweenEnrichment
 	} else {
