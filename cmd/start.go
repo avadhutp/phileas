@@ -22,12 +22,13 @@ func startPhileas(cmd *cobra.Command, args []string) {
 
 	cfg := lib.NewCfg(cfgPath)
 	db := lib.GetDB(cfg)
-	service := lib.NewService(cfg)
-	// instaAPI := lib.NewInstaAPI(cfg, db)
-	reverseGeocoder := lib.NewReverseGeocoder(cfg, db)
 
-	// go instaAPI.Backfill("")
+	instaAPI := lib.NewInstaAPI(cfg, db)
+	go instaAPI.Backfill("")
+
+	reverseGeocoder := lib.NewReverseGeocoder(cfg, db)
 	go reverseGeocoder.Enrich()
 
+	service := lib.NewService(cfg)
 	service.Run(":" + cfg.Common.Port)
 }

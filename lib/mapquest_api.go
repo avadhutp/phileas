@@ -41,6 +41,7 @@ func (rg *ReverseGeocoder) Enrich() {
 			rg.updateLoc(geo, &loc)
 		}
 
+		rg.throttleWait(len(locs))
 		time.Sleep(rg.wait)
 	}
 }
