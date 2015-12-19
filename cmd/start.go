@@ -27,7 +27,8 @@ func startPhileas(cmd *cobra.Command, args []string) {
 	// go instaAPI.Backfill("")
 
 	enrichment := lib.NewEnrichmentService(cfg, db)
-	go enrichment.EnrichLocation()
+	// go enrichment.EnrichLocation()
+	go enrichment.EnrichYelp()
 
 	service := lib.NewService(cfg)
 	service.Run(":" + cfg.Common.Port)

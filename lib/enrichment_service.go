@@ -2,10 +2,11 @@ package lib
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/JustinBeckwith/go-yelp/yelp"
-
+	"github.com/guregu/null"
 	"github.com/jasonwinn/geocoder"
 	"github.com/jinzhu/gorm"
 )
@@ -17,47 +18,53 @@ const (
 
 // EnrichmentService Goes systematically and enriches existing Location records with city + country information
 type EnrichmentService struct {
-	db         *gorm.DB
-	yelpClient *yelp.Client
-	wait       time.Duration
+	db            *gorm.DB
+	yelpClient    *yelp.Client
+	wait          time.Duration
+	sanitizeRegex strings.Replacer
 }
 
 // NewEnrichmentService Provider for EnrichmentService
 func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 	geocoder.SetAPIKey(cfg.Common.MapquestKey)
 
-	rg := new(EnrichmentService)
-	rg.db = db
-	rg.wait = waitBetweenEnrichment
+	es := new(EnrichmentService)
+	es.db = db
+	es.wait = waitBetweenEnrichment
+	es.sanitizeRegex = strings.NewReplacer("-", "", ",", "")
 
-	auth := yelp.AuthOptions{
+	auth := &yelp.AuthOptions{
 		ConsumerKey:       cfg.Yelp.ConsumerKey,
 		ConsumerSecret:    cfg.Yelp.ConsumerSecret,
 		AccessToken:       cfg.Yelp.AccessToken,
 		AccessTokenSecret: cfg.Yelp.AccessTokenSecret,
 	}
-	rg.yelpClient = yelp.New(auth, nil)
+	es.yelpClient = yelp.New(auth, nil)
 
-	return rg
+	return es
+}
+
+func (es *EnrichmentService) EnrichYelp() {
+
 }
 
 // Enrich Periodically check the DB and enrich records for city + country info
-func (rg *EnrichmentService) EnrichLocation() {
+func (es *EnrichmentService) EnrichLocation() {
 	for {
 		var locs []Location
-		rg.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
+		es.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
 
 		for _, loc := range locs {
-			geo := reverseGeocode(loc.Lat, loc.Long)
-			rg.updateLoc(geo, &loc)
+			geo := reverseGeocode(&loc)
+			es.updateLoc(geo, &loc)
 		}
 
-		rg.throttleWait(len(locs))
-		time.Sleep(rg.wait)
+		es.throttleWait(len(locs))
+		time.Sleep(es.wait)
 	}
 }
 
-func (rg *EnrichmentService) updateLoc(geo *geocoder.Location, loc *Location) {
+func (es *EnrichmentService) updateLoc(geo *geocoder.Location, loc *Location) {
 	if geo == nil || geo.CountryCode == "" {
 		return
 	}
@@ -72,19 +79,52 @@ func (rg *EnrichmentService) updateLoc(geo *geocoder.Location, loc *Location) {
 		loc.City = geo.State
 	}
 
-	rg.db.Save(loc)
+	es.db.Save(loc)
 }
 
-func (rg *EnrichmentService) throttleWait(found int) {
+func (es *EnrichmentService) throttleWait(found int) {
 	if found < enrichmentLimit {
-		rg.wait += waitBetweenEnrichment
+		es.wait += waitBetweenEnrichment
 	} else {
-		rg.wait = waitBetweenEnrichment
+		es.wait = waitBetweenEnrichment
 	}
 }
 
-func reverseGeocode(lat float64, long float64) *geocoder.Location {
-	if geo, err := geocoder.ReverseGeocode(lat, long); err == nil {
+func (es *EnrichmentService) getYelpInfo(loc *Location) *yelp.Business {
+	opts := yelp.SearchOptions{
+		GeneralOptions: &yelp.GeneralOptions{
+			Term: es.sanitize(loc.Name),
+		},
+		LocationOptions: &yelp.LocationOptions{
+			CoordinateOptions: &yelp.CoordinateOptions{
+				Latitude:  null.FloatFrom(loc.Lat),
+				Longitude: null.FloatFrom(loc.Long),
+			},
+		},
+	}
+
+	if rs, err := es.yelpClient.DoSearch(opts); err != nil {
+		return es.filterYelpResults(loc, &rs)
+	}
+
+	return nil
+}
+
+func (es *EnrichmentService) filterYelpResults(loc *Location, rs *yelp.SearchResult) *yelp.Business {
+	for _, r := range rs.Businesses {
+		if es.sanitize(loc.Name) == es.sanitize(r.Name) {
+			return &r
+		}
+	}
+
+	return nil
+}
+func (es *EnrichmentService) sanitize(s string) string {
+	return es.sanitizeRegex.Replace(strings.ToLower(s))
+}
+
+func reverseGeocode(loc *Location) *geocoder.Location {
+	if geo, err := geocoder.ReverseGeocode(loc.Lat, loc.Long); err == nil {
 		return geo
 	} else {
 		logger.Error(fmt.Sprintf("Reverse geocoding encountered and error: %s", err.Error()))
