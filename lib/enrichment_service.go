@@ -20,7 +20,8 @@ const (
 type EnrichmentService struct {
 	db            *gorm.DB
 	yelpClient    *yelp.Client
-	wait          time.Duration
+	locWait       time.Duration
+	yelpWait      time.Duration
 	sanitizeRegex strings.Replacer
 }
 
@@ -30,7 +31,8 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 
 	es := new(EnrichmentService)
 	es.db = db
-	es.wait = waitBetweenEnrichment
+	es.locWait = waitBetweenEnrichment
+	es.yelpWait = waitBetweenEnrichment
 	es.sanitizeRegex = strings.NewReplacer("-", "", ",", "")
 
 	auth := &yelp.AuthOptions{
@@ -45,7 +47,17 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 }
 
 func (es *EnrichmentService) EnrichYelp() {
+	for {
+		var locs []Location
+		es.db.Limit(enrichmentLimit).Where("yelp_type = ? and yelp_url = ?", "", "").Find(&locs)
 
+		for _, loc := range locs {
+			info := es.getYelpInfo(loc)
+		}
+
+		es.throttleWait(len(locs))
+		time.Sleep(es.wait)
+	}
 }
 
 // Enrich Periodically check the DB and enrich records for city + country info
@@ -56,7 +68,7 @@ func (es *EnrichmentService) EnrichLocation() {
 
 		for _, loc := range locs {
 			geo := reverseGeocode(&loc)
-			es.updateLoc(geo, &loc)
+			es.updateLocGeo(geo, &loc)
 		}
 
 		es.throttleWait(len(locs))
@@ -64,7 +76,7 @@ func (es *EnrichmentService) EnrichLocation() {
 	}
 }
 
-func (es *EnrichmentService) updateLoc(geo *geocoder.Location, loc *Location) {
+func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {
 	if geo == nil || geo.CountryCode == "" {
 		return
 	}
