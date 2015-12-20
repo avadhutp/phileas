@@ -12,6 +12,11 @@ import (
 )
 
 const (
+	typeYelp = iota
+	typeLoc
+)
+
+const (
 	enrichmentLimit       = 10
 	waitBetweenEnrichment = 30 * time.Second
 )
@@ -20,9 +25,8 @@ const (
 type EnrichmentService struct {
 	db            *gorm.DB
 	yelpClient    *yelp.Client
-	locWait       time.Duration
-	yelpWait      time.Duration
 	sanitizeRegex strings.Replacer
+	waits         map[int]time.Duration
 }
 
 // NewEnrichmentService Provider for EnrichmentService
@@ -31,9 +35,11 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 
 	es := new(EnrichmentService)
 	es.db = db
-	es.locWait = waitBetweenEnrichment
-	es.yelpWait = waitBetweenEnrichment
 	es.sanitizeRegex = strings.NewReplacer("-", "", ",", "")
+	es.waits = map[int]time.Duration{
+		typeYelp: waitBetweenEnrichment,
+		typeLoc:  waitBetweenEnrichment,
+	}
 
 	auth := &yelp.AuthOptions{
 		ConsumerKey:       cfg.Yelp.ConsumerKey,
@@ -46,21 +52,22 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 	return es
 }
 
+//EnrichYelp Periodically check the DB and enrich records for yelp category and URL
 func (es *EnrichmentService) EnrichYelp() {
 	for {
 		var locs []Location
 		es.db.Limit(enrichmentLimit).Where("yelp_type = ? and yelp_url = ?", "", "").Find(&locs)
 
 		for _, loc := range locs {
-			info := es.getYelpInfo(loc)
+			info := es.getYelpInfo(&loc)
 		}
 
-		es.throttleWait(len(locs))
-		time.Sleep(es.wait)
+		es.throttleWait(len(locs), typeYelp)
+		time.Sleep(es.waits[typeYelp])
 	}
 }
 
-// Enrich Periodically check the DB and enrich records for city + country info
+// EnrichLocation Periodically check the DB and enrich records for city + country info
 func (es *EnrichmentService) EnrichLocation() {
 	for {
 		var locs []Location
@@ -71,8 +78,8 @@ func (es *EnrichmentService) EnrichLocation() {
 			es.updateLocGeo(geo, &loc)
 		}
 
-		es.throttleWait(len(locs))
-		time.Sleep(es.wait)
+		es.throttleWait(len(locs), typeLoc)
+		time.Sleep(es.waits[typeLoc])
 	}
 }
 
@@ -94,11 +101,11 @@ func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location)
 	es.db.Save(loc)
 }
 
-func (es *EnrichmentService) throttleWait(found int) {
+func (es *EnrichmentService) throttleWait(found int, w int) {
 	if found < enrichmentLimit {
-		es.wait += waitBetweenEnrichment
+		es.waits[w] += waitBetweenEnrichment
 	} else {
-		es.wait = waitBetweenEnrichment
+		es.waits[w] = waitBetweenEnrichment
 	}
 }
 
@@ -136,10 +143,10 @@ func (es *EnrichmentService) sanitize(s string) string {
 }
 
 func reverseGeocode(loc *Location) *geocoder.Location {
-	if geo, err := geocoder.ReverseGeocode(loc.Lat, loc.Long); err == nil {
-		return geo
-	} else {
+	if geo, err := geocoder.ReverseGeocode(loc.Lat, loc.Long); err != nil {
 		logger.Error(fmt.Sprintf("Reverse geocoding encountered and error: %s", err.Error()))
+	} else {
+		return geo
 	}
 
 	return nil
