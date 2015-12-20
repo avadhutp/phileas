@@ -19,13 +19,14 @@ const (
 const (
 	enrichmentLimit       = 10
 	waitBetweenEnrichment = 30 * time.Second
+	exemptErrorID         = "UNAVAILABLE_FOR_LOCATION"
 )
 
 // EnrichmentService Goes systematically and enriches existing Location records with city + country information
 type EnrichmentService struct {
 	db            *gorm.DB
 	yelpClient    *yelp.Client
-	sanitizeRegex strings.Replacer
+	sanitizeRegex *strings.Replacer
 	waits         map[int]time.Duration
 }
 
@@ -60,6 +61,7 @@ func (es *EnrichmentService) EnrichYelp() {
 
 		for _, loc := range locs {
 			info := es.getYelpInfo(&loc)
+			es.updateLocYelp(info, &loc)
 		}
 
 		es.throttleWait(len(locs), typeYelp)
@@ -81,6 +83,18 @@ func (es *EnrichmentService) EnrichLocation() {
 		es.throttleWait(len(locs), typeLoc)
 		time.Sleep(es.waits[typeLoc])
 	}
+}
+
+func (es *EnrichmentService) updateLocYelp(info *yelp.Business, loc *Location) {
+	if info == nil {
+		loc.YelpType = "NA"
+		loc.YelpURL = "NA"
+	} else {
+		loc.YelpType = info.Categories[0][0]
+		loc.YelpURL = info.URL
+	}
+
+	es.db.Save(loc)
 }
 
 func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {
@@ -114,15 +128,17 @@ func (es *EnrichmentService) getYelpInfo(loc *Location) *yelp.Business {
 		GeneralOptions: &yelp.GeneralOptions{
 			Term: es.sanitize(loc.Name),
 		},
-		LocationOptions: &yelp.LocationOptions{
-			CoordinateOptions: &yelp.CoordinateOptions{
-				Latitude:  null.FloatFrom(loc.Lat),
-				Longitude: null.FloatFrom(loc.Long),
-			},
+		CoordinateOptions: &yelp.CoordinateOptions{
+			Latitude:  null.FloatFrom(loc.Lat),
+			Longitude: null.FloatFrom(loc.Long),
 		},
 	}
 
 	if rs, err := es.yelpClient.DoSearch(opts); err != nil {
+		if !exemptYelpError(err) {
+			logger.Error(fmt.Sprintf("Error fetching yelp info: %s", err.Error()))
+		}
+	} else {
 		return es.filterYelpResults(loc, &rs)
 	}
 
@@ -150,4 +166,16 @@ func reverseGeocode(loc *Location) *geocoder.Location {
 	}
 
 	return nil
+}
+
+func exemptYelpError(err error) bool {
+	return strings.Contains(err.Error(), exemptErrorID)
+}
+
+func notEmpty(s string) string {
+	if s == "" {
+		return "NA"
+	}
+
+	return s
 }
