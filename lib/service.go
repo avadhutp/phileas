@@ -13,17 +13,17 @@ func NewService(cfg *Cfg) *gin.Engine {
 	s.LoadHTMLGlob("templates/*")
 
 	s.GET("/ping", ping)
-	s.GET("/top", mapper)
+
+	s.GET("/top", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
+			"title": "Top destinations",
+			"key":   cfg.Common.GoogleMapsKey,
+		})
+	})
 
 	return s
 }
 
 func ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
-}
-
-func mapper(c *gin.Context) {
-	c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
-		"title": "Top destinations",
-	})
 }
