@@ -103,6 +103,7 @@ func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location)
 	}
 
 	loc.Country = geo.CountryCode
+	loc.Address = makeAddress(geo)
 
 	if geo.City != "" {
 		loc.City = geo.City
@@ -178,4 +179,24 @@ func notEmpty(s string) string {
 	}
 
 	return s
+}
+
+func makeAddress(geo *geocoder.Location) string {
+	els := []string{
+		geo.Street,
+		geo.City,
+		geo.State,
+		geo.County,
+		geo.PostalCode,
+	}
+
+	var addr []string
+
+	for _, el := range els {
+		if el != "" {
+			addr = append(addr, el)
+		}
+	}
+
+	return strings.Join(addr, ", ")
 }
