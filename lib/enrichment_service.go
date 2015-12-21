@@ -90,7 +90,9 @@ func (es *EnrichmentService) updateLocYelp(info *yelp.Business, loc *Location) {
 		loc.YelpType = "NA"
 		loc.YelpURL = "NA"
 	} else {
-		loc.YelpType = info.Categories[0][0]
+		if len(info.Categories) > 0 {
+			loc.YelpType = info.Categories[0][0]
+		}
 		loc.YelpURL = info.URL
 	}
 
