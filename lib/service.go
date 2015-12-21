@@ -12,7 +12,9 @@ func NewService(cfg *Cfg) *gin.Engine {
 	s.Use(gin.Logger())
 	s.LoadHTMLGlob("templates/*")
 
-	s.GET("/ping", ping)
+	s.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 
 	s.GET("/top", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
@@ -22,8 +24,4 @@ func NewService(cfg *Cfg) *gin.Engine {
 	})
 
 	return s
-}
-
-func ping(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
 }
