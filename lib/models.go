@@ -15,6 +15,7 @@ type Entry struct {
 	LocationID int    `sql:"NOT NULL"`
 }
 
+// Location Struct to hold all the location information
 type Location struct {
 	ID       int     `sql:"AUTO_INCREMENT"`
 	Name     string  `sql:"NOT NULL;type: varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci"`

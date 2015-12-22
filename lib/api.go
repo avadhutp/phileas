@@ -32,3 +32,10 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 		"key":   pe.googleKey,
 	})
 }
+
+func (pe *PhileasAPI) top(c *gin.Context) []Location {
+	var locs []Location
+	pe.db.Find(&locs)
+
+	return locs
+}
