@@ -1,7 +1,10 @@
 package lib
 
 import (
+	"encoding/json"
 	"net/http"
+
+	"github.com/kpawlik/geojson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -33,9 +36,28 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 	})
 }
 
-func (pe *PhileasAPI) top(c *gin.Context) []Location {
+func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	var locs []Location
 	pe.db.Find(&locs)
+	col := makeGeoJSON(locs)
 
-	return locs
+	if body, err := json.Marshal(col); err == nil {
+		c.ContentType()
+		c.String(http.StatusOK, string(body))
+	} else {
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+}
+
+func makeGeoJSON(locs []Location) *geojson.FeatureCollection {
+	var all []*geojson.Feature
+
+	for _, loc := range locs {
+		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(loc.Lat), geojson.CoordType(loc.Long)})
+		f := geojson.NewFeature(p, nil, nil)
+		all = append(all, f)
+	}
+
+	col := geojson.NewFeatureCollection(all)
+	return col
 }

@@ -15,6 +15,7 @@ func NewService(cfg *Cfg, db *gorm.DB) *gin.Engine {
 
 	s.GET("/ping", api.ping)
 	s.GET("/top", api.mapper)
+	s.GET("/top.json", api.topJSON)
 
 	return s
 }
