@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/kpawlik/geojson"
@@ -37,19 +36,14 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 }
 
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
-	var locs []Location
+	var locs []*Location
 	pe.db.Find(&locs)
 	col := makeGeoJSON(locs)
 
-	if body, err := json.Marshal(col); err == nil {
-		c.ContentType()
-		c.String(http.StatusOK, string(body))
-	} else {
-		c.String(http.StatusInternalServerError, err.Error())
-	}
+	c.JSON(http.StatusOK, col)
 }
 
-func makeGeoJSON(locs []Location) *geojson.FeatureCollection {
+func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
 	for _, loc := range locs {

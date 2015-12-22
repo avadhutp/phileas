@@ -25,6 +25,7 @@
 					center: {lat: 0, lng: 0},
 					zoom: 2
 				});
+				map.data.loadGeoJson('top.json');
 			}
 		</script>
 		<script src="https://maps.googleapis.com/maps/api/js?key={{ .key }}&callback=initMap"
