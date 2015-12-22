@@ -13,6 +13,7 @@ type PhileasAPI struct {
 	db        *gorm.DB
 }
 
+// NewPhileasAPI Go-style constructor to provide an instance of Phileas's API
 func NewPhileasAPI(cfg *Cfg, db *gorm.DB) *PhileasAPI {
 	api := &PhileasAPI{}
 	api.googleKey = cfg.Common.GoogleMapsKey
