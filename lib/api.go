@@ -1,16 +1,33 @@
 package lib
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
-type APIProvider struct {
-	db *gorm.DB
+// PhileasAPI Provides the data for phileas's API
+type PhileasAPI struct {
+	googleKey string
+	db        *gorm.DB
 }
 
-func (api *APIProvider) top() []Location {
-	var locs []Location
-	api.db.Find(&locs)
+func NewPhileasAPI(cfg *Cfg, db *gorm.DB) *PhileasAPI {
+	api := &PhileasAPI{}
+	api.googleKey = cfg.Common.GoogleMapsKey
+	api.db = db
 
-	return locs
+	return api
+}
+
+func (pe *PhileasAPI) ping(c *gin.Context) {
+	c.String(http.StatusOK, "pong")
+}
+
+func (pe *PhileasAPI) mapper(c *gin.Context) {
+	c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
+		"title": "Top destinations",
+		"key":   pe.googleKey,
+	})
 }

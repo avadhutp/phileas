@@ -30,6 +30,6 @@ func startPhileas(cmd *cobra.Command, args []string) {
 	go enrichment.EnrichLocation()
 	// go enrichment.EnrichYelp()
 
-	service := lib.NewService(cfg)
+	service := lib.NewService(cfg, db)
 	service.Run(":" + cfg.Common.Port)
 }
