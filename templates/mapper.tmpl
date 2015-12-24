@@ -33,10 +33,11 @@
 
 				map.data.addListener('click', function(event) {
 					var myHTML = event.feature.getProperty("content");
-					infowindow.setContent("<div style='width:150px; text-align: center;'>"+myHTML+"</div>");
-					infowindow.setPosition(event.feature.getGeometry().get());
-					infowindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
-					infowindow.open(map);
+					console.log(myHTML)
+					infoWindow.setContent(myHTML);
+					infoWindow.setPosition(event.feature.getGeometry().get());
+					infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
+					infoWindow.open(map);
 				});
 			}
 

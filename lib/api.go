@@ -1,17 +1,12 @@
 package lib
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kpawlik/geojson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-)
-
-const (
-	tmpl = `<div id="content><p>%s</p></div>`
 )
 
 // PhileasAPI Provides the data for phileas's API
@@ -54,7 +49,7 @@ func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	for _, loc := range locs {
 		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(loc.Long), geojson.CoordType(loc.Lat)})
 		props := map[string]interface{}{
-			"content": fmt.Sprintf(tmpl, loc.Name),
+			"content": loc.Name,
 		}
 
 		f := geojson.NewFeature(p, props, nil)
