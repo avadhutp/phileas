@@ -54,7 +54,11 @@ func (pe *PhileasAPI) instaMedia(c *gin.Context) {
 	mediaId := c.Param("media-id")
 	media := pe.instaAPI.MediaInfo(mediaId)
 
-	c.JSON(http.StatusOK, media)
+	c.JSON(http.StatusOK, map[string]string{
+		"thumbnail": media.Images.Thumbnail.URL,
+		"url":       media.Link,
+		"caption":   media.Caption.Text,
+	})
 }
 
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
