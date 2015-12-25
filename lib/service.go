@@ -6,8 +6,8 @@ import (
 )
 
 // NewService Provides the gonic gin service
-func NewService(cfg *Cfg, db *gorm.DB) *gin.Engine {
-	api := NewPhileasAPI(cfg, db)
+func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
+	api := NewPhileasAPI(cfg, db, instaAPI)
 
 	s := gin.New()
 	s.Use(gin.Logger())
@@ -16,6 +16,7 @@ func NewService(cfg *Cfg, db *gorm.DB) *gin.Engine {
 	s.GET("/ping", api.ping)
 	s.GET("/top", api.mapper)
 	s.GET("/top.json", api.topJSON)
+	s.GET("/insta-media/:media-id", api.instaMedia)
 
 	return s
 }

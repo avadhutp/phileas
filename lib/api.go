@@ -12,14 +12,17 @@ import (
 // PhileasAPI Provides the data for phileas's API
 type PhileasAPI struct {
 	googleKey string
+	instaAPI  *InstaAPI
 	db        *gorm.DB
 }
 
 // NewPhileasAPI Go-style constructor to provide an instance of Phileas's API
-func NewPhileasAPI(cfg *Cfg, db *gorm.DB) *PhileasAPI {
+func NewPhileasAPI(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *PhileasAPI {
 	api := &PhileasAPI{}
 	api.googleKey = cfg.Common.GoogleMapsKey
+
 	api.db = db
+	api.instaAPI = instaAPI
 
 	return api
 }
@@ -48,7 +51,10 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 
 // instaMedia -/insta
 func (pe *PhileasAPI) instaMedia(c *gin.Context) {
-	id := c.Param("media-id")
+	mediaId := c.Param("media-id")
+	media := pe.instaAPI.MediaInfo(mediaId)
+
+	c.JSON(http.StatusOK, media)
 }
 
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
