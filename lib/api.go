@@ -24,10 +24,12 @@ func NewPhileasAPI(cfg *Cfg, db *gorm.DB) *PhileasAPI {
 	return api
 }
 
+// ping — /ping
 func (pe *PhileasAPI) ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
+// mapper -/top
 func (pe *PhileasAPI) mapper(c *gin.Context) {
 	c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
 		"title": "Top destinations",
@@ -35,12 +37,18 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 	})
 }
 
+// topJSON — /top.json
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	var locs []*Location
 	pe.db.Find(&locs)
 	col := makeGeoJSON(locs)
 
 	c.JSON(http.StatusOK, col)
+}
+
+// instaMedia -/insta
+func (pe *PhileasAPI) instaMedia(c *gin.Context) {
+	id := c.Param("media-id")
 }
 
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {

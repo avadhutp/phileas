@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"net/url"
 	"time"
 
@@ -57,6 +58,16 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 	if maxLikeID != "" {
 		time.Sleep(backfillWait)
 		i.Backfill(maxLikeID)
+	}
+}
+
+// MediaInfo Retrieves info about one one instagram post
+func (i *InstaAPI) MediaInfo(mediaId string) *instagram.Media {
+	if info, err := i.client.Media.Get(mediaId); err == nil {
+		return info
+	} else {
+		logger.Error(fmt.Sprintf("Cannot fetch media info: %s", err.Error()))
+		return nil
 	}
 }
 
