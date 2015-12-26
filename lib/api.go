@@ -9,6 +9,15 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// LocEntry Results struct for MySQL join queries
+type LocEntry struct {
+	VendorID   string
+	LocationID int
+	Name       string
+	Lat        float64
+	Long       float64
+}
+
 // PhileasAPI Provides the data for phileas's API
 type PhileasAPI struct {
 	googleKey string
@@ -42,21 +51,21 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 
 // topJSON — /top.json
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
-	var locs []*Location
-	pe.db.Find(&locs)
-	col := makeGeoJSON(locs)
+	var results []*LocEntry
+	pe.db.Table("location").Select("entry.vendor_id, entry.location_id, location.name, location.lat, location.long").Joins("join entry on location.id = entry.location_id").Scan(&results)
+	// col := makeGeoJSON(locs)
 
-	c.JSON(http.StatusOK, col)
+	c.JSON(http.StatusOK, results)
 }
 
 // instaMedia -/insta
 func (pe *PhileasAPI) instaMedia(c *gin.Context) {
-	mediaId := c.Param("media-id")
-	media := pe.instaAPI.MediaInfo(mediaId)
+	mediaID := c.Param("media-id")
+	media := pe.instaAPI.MediaInfo(mediaID)
 
 	c.JSON(http.StatusOK, map[string]string{
 		"thumbnail": media.Images.Thumbnail.URL,
-		"url":       media.Link,
+		"URL":       media.Link,
 		"caption":   media.Caption.Text,
 	})
 }
