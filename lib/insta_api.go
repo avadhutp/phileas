@@ -87,9 +87,12 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
 	var l Location
 	i.db.FirstOrCreate(&l, Location{
-		Name: m.Location.Name,
-		Lat:  m.Location.Latitude,
-		Long: m.Location.Longitude,
+		Name:      m.Location.Name,
+		Lat:       m.Location.Latitude,
+		Long:      m.Location.Longitude,
+		Thumbnail: m.Images.Thumbnail.URL,
+		URL:       m.Link,
+		Caption:   m.Caption.Text,
 	})
 
 	return &l
