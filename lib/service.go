@@ -16,7 +16,6 @@ func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
 	s.GET("/ping", api.ping)
 	s.GET("/top", api.mapper)
 	s.GET("/top.json", api.topJSON)
-	s.GET("/insta-media/:media-id", api.instaMedia)
 
 	return s
 }

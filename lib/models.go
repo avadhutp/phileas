@@ -32,7 +32,7 @@ type Location struct {
 }
 
 func getDBConnString(cfg *Cfg) string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?character_set_server=utf8mb4&parseTime=True&loc=Local",
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?character_set_server=utf8&parseTime=True&loc=Local",
 		cfg.Mysql.Username,
 		cfg.Mysql.Password,
 		cfg.Mysql.Host,
