@@ -92,7 +92,7 @@ func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
 		Long:      m.Location.Longitude,
 		Thumbnail: m.Images.Thumbnail.URL,
 		URL:       m.Link,
-		Caption:   m.Caption.Text,
+		Caption:   "test caption",
 	})
 
 	return &l

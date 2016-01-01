@@ -58,18 +58,6 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
-// instaMedia -/insta
-func (pe *PhileasAPI) instaMedia(c *gin.Context) {
-	mediaID := c.Param("media-id")
-	media := pe.instaAPI.MediaInfo(mediaID)
-
-	c.JSON(http.StatusOK, map[string]string{
-		"thumbnail": media.Images.Thumbnail.URL,
-		"URL":       media.Link,
-		"caption":   media.Caption.Text,
-	})
-}
-
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
