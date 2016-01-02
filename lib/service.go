@@ -15,6 +15,7 @@ func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
 	s.StaticFile("/favicon.ico", "static/favicon.ico")
 
 	s.GET("/ping", api.ping)
+	s.GET("/loc/:location-id", api.location)
 	s.GET("/top", api.mapper)
 	s.GET("/top.json", api.topJSON)
 

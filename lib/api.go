@@ -41,6 +41,12 @@ func (pe *PhileasAPI) ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
+func (pe *PhileasAPI) location(c *gin.Context) {
+	l := c.Param("location-id")
+
+	c.String(http.StatusOK, l)
+}
+
 // mapper -/top
 func (pe *PhileasAPI) mapper(c *gin.Context) {
 	c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
