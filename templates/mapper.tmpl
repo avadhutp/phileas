@@ -32,12 +32,16 @@
 				map.data.loadGeoJson('top.json');
 
 				map.data.addListener('click', function(event) {
-					var myHTML = event.feature.getProperty("content");
-					console.log(myHTML)
-					infoWindow.setContent(myHTML);
-					infoWindow.setPosition(event.feature.getGeometry().get());
-					infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
-					infoWindow.open(map);
+					var id = event.feature.getProperty("id");
+					$.ajax({
+						url: 'loc/' + id,
+						success: function(data) {						
+							infoWindow.setContent(data);
+							infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
+							infoWindow.setPosition(event.feature.getGeometry().get());
+							infoWindow.open(map);
+						}
+					});
 				});
 
 				if (navigator.geolocation) {
@@ -54,6 +58,7 @@
 
 			
 		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key={{ .key }}&callback=initMap"
 		async defer></script>
 	</body>

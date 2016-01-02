@@ -70,7 +70,8 @@ func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	for _, loc := range locs {
 		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(loc.Long), geojson.CoordType(loc.Lat)})
 		props := map[string]interface{}{
-			"content": loc.Name,
+			"name": loc.Name,
+			"id":   loc.ID,
 		}
 
 		f := geojson.NewFeature(p, props, nil)
