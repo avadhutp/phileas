@@ -12,6 +12,7 @@ func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
 	s := gin.New()
 	s.Use(gin.Logger())
 	s.LoadHTMLGlob("templates/*")
+	s.Static("/static", "static")
 	s.StaticFile("/favicon.ico", "static/favicon.ico")
 
 	s.GET("/ping", api.ping)
