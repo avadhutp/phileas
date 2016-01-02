@@ -40,7 +40,13 @@
 					$.ajax({
 						url: 'loc/' + event.feature.getProperty("id"),
 						success: function(data) {
-							infoWindow.setContent(data);
+							infoWindow.setContent(
+								'<h3>'
+								+ event.feature.getProperty("name") 
+								+ '</h3><p>' 
+								+ data 
+								+ '</p>'
+							);
 						}
 					});
 				});
