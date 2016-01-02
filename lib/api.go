@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	imgTmpl = `<img src="%s" />`
+	imgTmpl = `<div><img src="%s" /><p>%s</p></div>`
 )
 
 // LocEntry Results struct for MySQL join queries
@@ -55,7 +55,7 @@ func (pe *PhileasAPI) location(c *gin.Context) {
 
 	var out []string
 	for _, e := range entries {
-		out = append(out, fmt.Sprintf(imgTmpl, e.Thumbnail))
+		out = append(out, fmt.Sprintf(imgTmpl, e.Thumbnail, e.Caption))
 	}
 
 	c.String(http.StatusOK, strings.Join(out, "<br />"))
