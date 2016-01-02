@@ -1,12 +1,19 @@
 package lib
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/kpawlik/geojson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+)
+
+const (
+	imgTmpl = `<img src="%s" />`
 )
 
 // LocEntry Results struct for MySQL join queries
@@ -42,9 +49,16 @@ func (pe *PhileasAPI) ping(c *gin.Context) {
 }
 
 func (pe *PhileasAPI) location(c *gin.Context) {
-	l := c.Param("location-id")
+	l, _ := strconv.Atoi(c.Param("location-id"))
+	var entries []*Entry
+	pe.db.Where(&Entry{LocationID: l}).Find(&entries)
 
-	c.String(http.StatusOK, l)
+	var out []string
+	for _, e := range entries {
+		out = append(out, fmt.Sprintf(imgTmpl, e.Thumbnail))
+	}
+
+	c.String(http.StatusOK, strings.Join(out, "<br />"))
 }
 
 // mapper -/top
