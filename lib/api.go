@@ -51,11 +51,11 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 
 // topJSON — /top.json
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
-	var results []*LocEntry
-	pe.db.Table("location").Select("entry.vendor_id, entry.location_id, location.name, location.lat, location.long").Joins("join entry on location.id = entry.location_id").Scan(&results)
-	// col := makeGeoJSON(locs)
+	var locs []*Location
+	pe.db.Find(&locs)
+	col := makeGeoJSON(locs)
 
-	c.JSON(http.StatusOK, results)
+	c.JSON(http.StatusOK, col)
 }
 
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
