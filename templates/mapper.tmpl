@@ -41,11 +41,13 @@
 						url: 'loc/' + event.feature.getProperty("id"),
 						success: function(data) {
 							infoWindow.setContent(
-								'<h3>'
+								'<div id="content">'
+								+ '<h1 id="firstHeading">'
 								+ event.feature.getProperty("name") 
-								+ '</h3><p>' 
+								+ '</h1>'
+								+ '<div id="bodyContent">' 
 								+ data 
-								+ '</p>'
+								+ '</div></div>'
 							);
 						}
 					});
