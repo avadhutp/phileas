@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/avadhutp/phileas/lib"
+	// mysql import is unnamed for use with gorm
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/cobra"

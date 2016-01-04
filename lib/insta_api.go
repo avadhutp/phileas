@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"net/url"
 	"time"
 
@@ -14,6 +13,7 @@ const (
 	backfillWait      = 5 * time.Second
 )
 
+// InstaAPI encapsulate functionality for all instagram functionality
 type InstaAPI struct {
 	client *instagram.Client
 	db     *gorm.DB
@@ -61,30 +61,22 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 	}
 }
 
-// MediaInfo Retrieves info about one one instagram post
-func (i *InstaAPI) MediaInfo(mediaId string) *instagram.Media {
-	if info, err := i.client.Media.Get(mediaId); err == nil {
-		return info
-	} else {
-		logger.Error(fmt.Sprintf("Cannot fetch media info: %s", err.Error()))
-		return nil
-	}
-}
-
 func (i *InstaAPI) saveMedia(m *instagram.Media) {
-	if i.isLocationOk(m) {
-		loc := i.saveLocation(m)
-		var e Entry
-		i.db.FirstOrCreate(&e, Entry{
-			Type:       "instagram",
-			VendorID:   m.ID,
-			Thumbnail:  m.Images.Thumbnail.URL,
-			URL:        m.Link,
-			Caption:    m.Caption.Text,
-			Timestamp:  m.CreatedTime,
-			LocationID: loc.ID,
-		})
+	if !i.isLocationOk(m) {
+		return
 	}
+
+	loc := i.saveLocation(m)
+	var e Entry
+	i.db.FirstOrCreate(&e, Entry{
+		Type:       "instagram",
+		VendorID:   m.ID,
+		Thumbnail:  m.Images.Thumbnail.URL,
+		URL:        m.Link,
+		Caption:    m.Caption.Text,
+		Timestamp:  m.CreatedTime,
+		LocationID: loc.ID,
+	})
 }
 
 func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
