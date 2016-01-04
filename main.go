@@ -2,7 +2,7 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/avadhutp/phileas/cmd"
+	"github.com/avadhutp/phileas/command"
 )
 
 var (
@@ -10,7 +10,7 @@ var (
 )
 
 func main() {
-	if err := cmd.RootCmd.Execute(); err != nil {
+	if err := command.RootCmd.Execute(); err != nil {
 		panic(err)
 	}
 }
