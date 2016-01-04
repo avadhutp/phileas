@@ -5,10 +5,16 @@ import (
 
 	"github.com/avadhutp/phileas/lib"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 	"github.com/spf13/cobra"
 )
 
 var (
+	dbSet         = (*gorm.DB).Set
+	dbAutoMigrate = (*gorm.DB).AutoMigrate
+	libNewCfg     = lib.NewCfg
+	libGetDB      = lib.GetDB
+
 	setupCmd = &cobra.Command{
 		Use:   "setup",
 		Short: "Setup Phileas, install DB, etc.",
@@ -20,11 +26,11 @@ var (
 func setup(cmd *cobra.Command, args []string) {
 	logger.Info(fmt.Sprintf("Setting up Phileas; config at %s", cfgPath))
 
-	cfg := lib.NewCfg(cfgPath)
+	cfg := libNewCfg(cfgPath)
 
-	db := lib.GetDB(cfg)
-	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&lib.Location{})
-	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&lib.Entry{})
+	db := libGetDB(cfg)
+	dbSet(db, "gorm:table_options", "ENGINE=InnoDB")
+	dbAutoMigrate(db, &lib.Entry{}, &lib.Location{})
 
 	logger.Info("Phileas is ready!")
 }
