@@ -6,7 +6,9 @@ import (
 )
 
 var (
-	logger = log.WithFields(log.Fields{"file": "cfg.go"})
+	logger   = log.WithFields(log.Fields{"file": "cfg.go"})
+	logErr   = logger.Error
+	iniMapTo = ini.MapTo
 )
 
 type common struct {
@@ -47,10 +49,11 @@ type Cfg struct {
 // NewCfg Gets the config struct
 func NewCfg(fileName string) *Cfg {
 	var cfg Cfg
-	err := ini.MapTo(&cfg, "phileas.ini")
+	err := iniMapTo(&cfg, "phileas.ini")
 
 	if err != nil {
-		logger.Error("Cannot parse the config file: ", err)
+		logErr("Cannot parse the config file: ", err)
+		return nil
 	}
 
 	return &cfg
