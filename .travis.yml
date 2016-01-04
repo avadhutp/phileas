@@ -5,8 +5,8 @@ go:
     - tip
 
 before_install:
-	- go get -t github.com/avadhutp/phileas/command
-	- go get -t github.com/avadhutp/phileas/lib
+    - go get -t github.com/avadhutp/phileas/command
+    - go get -t github.com/avadhutp/phileas/lib
     - go get -t github.com/avadhutp/phileas
     - go get github.com/onsi/gomega
     - go get github.com/onsi/ginkgo
@@ -17,4 +17,4 @@ script:
     - ./test.sh
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash)
