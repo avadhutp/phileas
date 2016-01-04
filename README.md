@@ -1,4 +1,4 @@
-# Phileas ![logo](http://i.imgur.com/7eY6CUs.png) [![Build Status](https://img.shields.io/travis/avadhutp/phileas/master.svg?style=flat)](https://travis-ci.org/avadhutp/phileas) [![GoDoc](https://godoc.org/github.com/avadhutp/phileas?status.png)](https://godoc.org/github.com/avadhutp/phileas)
+# Phileas ![logo](http://i.imgur.com/7eY6CUs.png) [![Build Status](https://img.shields.io/travis/avadhutp/phileas/master.svg?style=flat)](https://travis-ci.org/avadhutp/phileas) [![CodeCov](https://img.shields.io/codecov/c/github/avadhutp/phileas.svg?style=flat)](https://codecov.io/github/avadhutp/phileas) [![GoDoc](https://godoc.org/github.com/avadhutp/phileas?status.png)](https://godoc.org/github.com/avadhutp/phileas)
  
 > “I see that it is by no means useless to travel, if a man wants to see something new”
 
