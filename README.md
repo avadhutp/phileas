@@ -1,4 +1,4 @@
-# Phileas ![logo](http://i.imgur.com/7eY6CUs.png)
+# Phileas ![logo](http://i.imgur.com/7eY6CUs.png) [![Build Status](https://img.shields.io/travis/avadhutp/phileas/master.svg?style=flat)](https://travis-ci.org/avadhutp/phileas)
  
 > “I see that it is by no means useless to travel, if a man wants to see something new”
 
