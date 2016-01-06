@@ -6,6 +6,11 @@ import (
 	"fmt"
 )
 
+var (
+	gormOpen        = gorm.Open
+	dbSingularTable = (*gorm.DB).SingularTable
+)
+
 // Entry Contains all of the instagrams likes indexed by required fields
 type Entry struct {
 	ID         int    `sql:"AUTO_INCREMENT"`
@@ -42,13 +47,13 @@ func getDBConnString(cfg *Cfg) string {
 
 // GetDB Provides the DB connection with all the required options set
 func GetDB(cfg *Cfg) *gorm.DB {
-	db, err := gorm.Open("mysql", getDBConnString(cfg))
+	db, err := gormOpen("mysql", getDBConnString(cfg))
 
 	if err != nil {
 		panic(err)
 	}
 
-	db.SingularTable(true)
+	dbSingularTable(&db, true)
 
 	return &db
 }
