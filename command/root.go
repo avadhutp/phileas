@@ -2,12 +2,16 @@ package command
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"github.com/avadhutp/phileas/lib"
 	"github.com/spf13/cobra"
 )
 
 var (
-	cfgPath string
-	logger  = log.WithFields(log.Fields{"package": "command"})
+	cfgPath        string
+	logger         = log.WithFields(log.Fields{"package": "command"})
+	libNewCfg      = lib.NewCfg
+	libGetDB       = lib.GetDB
+	libNewInstaAPI = lib.NewInstaAPI
 	// RootCmd This represents the binary itself
 	RootCmd = &cobra.Command{
 		Use:   "phileas",

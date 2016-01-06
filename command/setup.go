@@ -13,8 +13,6 @@ import (
 var (
 	dbSet         = (*gorm.DB).Set
 	dbAutoMigrate = (*gorm.DB).AutoMigrate
-	libNewCfg     = lib.NewCfg
-	libGetDB      = lib.GetDB
 
 	setupCmd = &cobra.Command{
 		Use:   "setup",
