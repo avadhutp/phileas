@@ -3,12 +3,16 @@ package command
 import (
 	"fmt"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/avadhutp/phileas/lib"
 	"github.com/spf13/cobra"
 )
 
 var (
-	startCmd = &cobra.Command{
+	libNewService = lib.NewService
+	serviceRun    = (*gin.Engine).Run
+	startCmd      = &cobra.Command{
 		Use:   "start",
 		Short: "Start the web server",
 		Long:  "Start the web server to provide Phileas as a service",
@@ -19,15 +23,10 @@ var (
 func startPhileas(cmd *cobra.Command, args []string) {
 	logger.Info(fmt.Sprintf("Starting Phileas; config's at %s", cfgPath))
 
-	cfg := lib.NewCfg(cfgPath)
-	db := lib.GetDB(cfg)
+	cfg := libNewCfg(cfgPath)
+	db := libGetDB(cfg)
+	instaAPI := libNewInstaAPI(cfg, db)
 
-	instaAPI := lib.NewInstaAPI(cfg, db)
-
-	// enrichment := lib.NewEnrichmentService(cfg, db)
-	// go enrichment.EnrichLocation()
-	// go enrichment.EnrichYelp()
-
-	service := lib.NewService(cfg, db, instaAPI)
-	service.Run(":" + cfg.Common.Port)
+	service := libNewService(cfg, db, instaAPI)
+	serviceRun(service, ":"+cfg.Common.Port)
 }
