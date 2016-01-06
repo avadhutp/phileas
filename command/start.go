@@ -17,13 +17,12 @@ var (
 )
 
 func startPhileas(cmd *cobra.Command, args []string) {
-	logger.Info(fmt.Sprintf("Starting Phileas; config at %s", cfgPath))
+	logger.Info(fmt.Sprintf("Starting Phileas; config's at %s", cfgPath))
 
 	cfg := lib.NewCfg(cfgPath)
 	db := lib.GetDB(cfg)
 
 	instaAPI := lib.NewInstaAPI(cfg, db)
-	// go instaAPI.Backfill("")
 
 	// enrichment := lib.NewEnrichmentService(cfg, db)
 	// go enrichment.EnrichLocation()

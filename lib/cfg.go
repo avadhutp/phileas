@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	logger   = log.WithFields(log.Fields{"file": "cfg.go"})
+	logger   = log.WithFields(log.Fields{"package": "lib"})
 	logErr   = logger.Error
 	iniMapTo = ini.MapTo
 )
