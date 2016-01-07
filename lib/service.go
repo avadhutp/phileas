@@ -5,13 +5,17 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+var (
+	ginLoadHTMLGlob = (*gin.Engine).LoadHTMLGlob
+)
+
 // NewService Provides the gonic gin service
 func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
 	api := NewPhileasAPI(cfg, db, instaAPI)
 
 	s := gin.New()
 	s.Use(gin.Logger())
-	s.LoadHTMLGlob("templates/*")
+	ginLoadHTMLGlob(s, "templates/*")
 	s.Static("/static", "static")
 	s.StaticFile("/favicon.ico", "static/favicon.ico")
 
