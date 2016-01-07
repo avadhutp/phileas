@@ -20,6 +20,10 @@ const (
 		</div>`
 )
 
+var (
+	ginContextString = (*gin.Context).String
+)
+
 // LocEntry Results struct for MySQL join queries
 type LocEntry struct {
 	VendorID   string
@@ -49,7 +53,7 @@ func NewPhileasAPI(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *PhileasAPI {
 
 // ping — /ping
 func (pe *PhileasAPI) ping(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
+	ginContextString(c, http.StatusOK, "pong")
 }
 
 func (pe *PhileasAPI) location(c *gin.Context) {
