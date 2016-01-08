@@ -2,29 +2,33 @@ package lib
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
 )
 
+func getSUT() *gin.Engine {
+	cfg := &Cfg{}
+	cfg.Common.GoogleMapsKey = "test-key"
+
+	oldGinLoadHTMLGlob := ginLoadHTMLGlob
+	defer func() {
+		ginLoadHTMLGlob = oldGinLoadHTMLGlob
+	}()
+	ginLoadHTMLGlob = func(*gin.Engine, string) {}
+
+	return NewService(cfg, &gorm.DB{}, &InstaAPI{})
+}
+
 func TestPing(t *testing.T) {
-	oldGinContextString := ginContextString
-	defer func() { ginContextString = oldGinContextString }()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/ping", nil)
+	sut := getSUT()
+	sut.ServeHTTP(w, req)
 
-	c := &gin.Context{}
-	sut := &PhileasAPI{}
-
-	var status int
-	var body string
-	ginContextString = func(pe *gin.Context, s int, b string, args ...interface{}) {
-		status = s
-		body = b
-	}
-
-	sut.ping(c)
-
-	assert.Equal(t, http.StatusOK, status)
-	assert.Equal(t, "pong", body)
+	assert.Equal(t, "pong", w.Body.String())
+	assert.Equal(t, http.StatusOK, w.Code)
 }
