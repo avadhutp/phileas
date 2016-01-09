@@ -19,3 +19,24 @@ Setting | Description |
 `port`  | Ther port number on which to start the Phileas server | 
 `mapquest_key` | Used for reverse geo coding. Can be gotten from [developer.mapquest.com](https://developer.mapquest.com) | 
 `google_maps_key` | Google Maps API key. Can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en) |
+### Mysql
+Example:
+```
+[mysql]
+host = localhost
+port = 3306
+username = user
+password = password
+schema = phileas
+```
+### Instagram
+Phileas needs to connect to the Instagram API to fetch your likes. For this, it needs to connect to your Intagram API Account, the details for which can be gotten from [www.instagram.com/developer/clients/manage](https://www.instagram.com/developer/clients/manage/). You need to 
+
+1. Create a new client in the _Manage Clients_ section
+2. And then copy the required config into the `instagram` section of phileas's config file as show below:
+```
+[instagram]
+client_id = xxxxxx
+secret = xxxxxxxx
+access_token = xxxxxxxx
+```
