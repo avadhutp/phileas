@@ -32,3 +32,10 @@ func TestPing(t *testing.T) {
 	assert.Equal(t, "pong", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestMapper(t *testing.T) {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/top", nil)
+	sut := getSUT()
+	sut.ServeHTTP(w, req)
+}

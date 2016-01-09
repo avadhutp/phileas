@@ -1,0 +1,22 @@
+[common]
+port = 8081
+mapquest_key = 
+google_maps_key = 
+
+[mysql]
+host = localhost
+port = 3306
+username = 
+password = 
+schema = phileas
+
+[instagram]
+client_id = 
+secret =  
+access_token = 
+
+[yelp]
+consumer_key = 
+consumer_secret = 
+access_token = 
+access_token_secret = 
