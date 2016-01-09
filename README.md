@@ -3,3 +3,19 @@
 > “I see that it is by no means useless to travel, if a man wants to see something new”
 
 Phileas can tell you where you should travel next, based on your instagram likes. Phileas ingests your likes and drops them as markers on a map. It also uses Yelp's API and enriches your liked media with some more information—like places of interest, eateries, hotels, etc.
+
+# Settings
+Phileas works off of an `ini` file. This supports the following configs:
+### Common
+Example: 
+```
+[common]
+port = 8081
+mapquest_key = XXXXX
+google_maps_key = XXXXX
+```
+Setting | Description |
+--------|-------------|
+`port`  | Ther port number on which to start the Phileas server | 
+`mapquest_key` | Used for reverse geo coding. Can be gotten from [developer.mapquest.com](https://developer.mapquest.com) | 
+`google_maps_key` | Google Maps API key. Can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en) |
