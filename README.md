@@ -4,6 +4,14 @@
 
 Phileas can tell you where you should travel next, based on your instagram likes. Phileas ingests your likes and drops them as markers on a map. It also uses Yelp's API and enriches your liked media with some more information—like places of interest, eateries, hotels, etc.
 
+# Installation
+1. Create an `ini` file as shown in the [settings](#settings) section of this README
+2. Put it in `/etc/phileas.ini`; optionally, you can pass the location of the ini file at run time
+3. Download Phileas: `go get github.com/avadhutp/phileas`
+4. First, run setup as `phileas setup`; this will set up the required table structure 
+5. Next, initiate the backfill as `phileas backfill`; this will populate the database with all the historic data
+6. Finally, run the actual Phileas server by issuing `phileas start`; you can issue this command in parallel with the `backfill` command
+
 # Settings
 Phileas works off of an `ini` file. This supports the following configs:
 ### Common
