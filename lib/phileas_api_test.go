@@ -22,6 +22,7 @@ func getSUT() *gin.Engine {
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
 
 	r := NewService(cfg, &gorm.DB{}, &InstaAPI{})
+
 	tmpl, _ := template.New("mapper.tmpl").Parse(`{{ .title }} | {{ .key }}`)
 	r.SetHTMLTemplate(tmpl)
 
