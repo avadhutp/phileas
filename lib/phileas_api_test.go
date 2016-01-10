@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -20,22 +21,32 @@ func getSUT() *gin.Engine {
 	}()
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
 
-	return NewService(cfg, &gorm.DB{}, &InstaAPI{})
+	r := NewService(cfg, &gorm.DB{}, &InstaAPI{})
+	tmpl, _ := template.New("mapper.tmpl").Parse(`{{ .title }} | {{ .key }}`)
+	r.SetHTMLTemplate(tmpl)
+
+	return r
+}
+
+func peformRequest(method string, path string) *httptest.ResponseRecorder {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(method, path, nil)
+	sut := getSUT()
+	sut.ServeHTTP(w, req)
+
+	return w
 }
 
 func TestPing(t *testing.T) {
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/ping", nil)
-	sut := getSUT()
-	sut.ServeHTTP(w, req)
+	w := peformRequest("GET", "/ping")
 
-	assert.Equal(t, "pong", w.Body.String())
 	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "pong", w.Body.String())
 }
 
 func TestMapper(t *testing.T) {
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/top", nil)
-	sut := getSUT()
-	sut.ServeHTTP(w, req)
+	w := peformRequest("GET", "/top")
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "Top destinations | test-key", w.Body.String())
 }
