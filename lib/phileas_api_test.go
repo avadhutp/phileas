@@ -16,8 +16,10 @@ func getSUT() *gin.Engine {
 	cfg.Common.GoogleMapsKey = "test-key"
 
 	oldGinLoadHTMLGlob := ginLoadHTMLGlob
+	oldDBFind := dbFind
 	defer func() {
 		ginLoadHTMLGlob = oldGinLoadHTMLGlob
+		dbFind = oldDBFind
 	}()
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
 
@@ -50,4 +52,8 @@ func TestMapper(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "Top destinations | test-key", w.Body.String())
+}
+
+func TestTopJson(t *testing.T) {
+
 }

@@ -57,3 +57,8 @@ consumer_secret = xxxxxxxxxxxxxxxx
 access_token = xxxxxxxxxxxxxxxx
 access_token_secret = xxxxxxxxxxxxxxxx
 ```
+
+# URLs
+URL | Description | Expected HTTP code | Expected response |
+----|-------------|--------------------|-------------------|
+`/ping` | Healthcheck URL to see if the server is up and running | 200 | `pong` |
