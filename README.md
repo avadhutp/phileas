@@ -61,6 +61,6 @@ access_token_secret = xxxxxxxxxxxxxxxx
 # URLs
 URL | Description | Expected HTTP code | Expected response |
 ----|-------------|--------------------|-------------------|
-`/ping` | Healthcheck URL to see if the server is up and running | 200 | `pong` |
-`/top` | Shows a google map with the locations overlayed | 200 | Google map markup |
-`/top.json` | Locations from Phileas's databse encoded in the GeoJSON format | 200 | GeoJSON-encoded locations|
+`/ping` | Healthcheck URL to see if the server is up and running | `200` | `pong` |
+`/top` | Shows a google map with the locations overlayed | `200` | Google map markup |
+`/top.json` | Locations from Phileas's databse encoded in the GeoJSON format | `200` | GeoJSON-encoded locations|
