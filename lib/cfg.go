@@ -49,7 +49,7 @@ type Cfg struct {
 // NewCfg Gets the config struct
 func NewCfg(fileName string) *Cfg {
 	var cfg Cfg
-	err := iniMapTo(&cfg, "phileas.ini")
+	err := iniMapTo(&cfg, fileName)
 
 	if err != nil {
 		logErr("Cannot parse the config file: ", err)
