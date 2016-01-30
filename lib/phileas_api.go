@@ -20,10 +20,6 @@ const (
 		</div>`
 )
 
-var (
-	dbFind = (*gorm.DB).Find
-)
-
 // LocEntry Results struct for MySQL join queries
 type LocEntry struct {
 	VendorID   string
@@ -80,7 +76,7 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 // topJSON — /top.json
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	var locs []*Location
-	dbFind(pe.db, &locs)
+	pe.db.Find(&locs)
 	col := makeGeoJSON(locs)
 
 	c.JSON(http.StatusOK, col)
