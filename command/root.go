@@ -12,14 +12,13 @@ var (
 	libNewCfg      = lib.NewCfg
 	libGetDB       = lib.GetDB
 	libNewInstaAPI = lib.NewInstaAPI
+
 	// RootCmd This represents the binary itself
 	RootCmd = &cobra.Command{
 		Use:   "phileas",
 		Short: "Phileas creates your bucket list",
 		Long:  "Phileas creates your bucket list based on your instagram & reddit likes & upvotes, respectively",
-		Run: func(cmd *cobra.Command, args []string) {
-			// Empty root command
-		},
+		Run:   nil,
 	}
 )
 
