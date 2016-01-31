@@ -19,7 +19,6 @@ var (
 	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "yelptype", "yelpurl"}
 	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
 
-	db      gorm.DB
 	service *gin.Engine
 )
 
