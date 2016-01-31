@@ -20,7 +20,12 @@ var (
 	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
 
 	service *gin.Engine
+	minHTML = minify.New()
 )
+
+func init() {
+	minHTML.AddFunc("text/html", html.Minify)
+}
 
 func init() {
 	db, _ := gorm.Open("testdb", "")
@@ -89,10 +94,7 @@ func TestLocation(t *testing.T) {
 }
 
 func minifyHTML(raw string) string {
-	m := minify.New()
-	m.AddFunc("text/html", html.Minify)
-
-	out, _ := m.String("text/html", raw)
+	out, _ := minHTML.String("text/html", raw)
 
 	return out
 }
