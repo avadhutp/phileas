@@ -1,9 +1,9 @@
 package lib
 
 import (
-	"fmt"
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/html"
+	"github.com/tdewolff/minify/json"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -21,10 +21,12 @@ var (
 
 	service *gin.Engine
 	minHTML = minify.New()
+	minJSON = minify.New()
 )
 
 func init() {
 	minHTML.AddFunc("text/html", html.Minify)
+	minJSON.AddFunc("text/json", json.Minify)
 }
 
 func init() {
@@ -73,7 +75,7 @@ func TestTopJSON(t *testing.T) {
 
 	w := peformRequest("GET", "/top.json")
 
-	assert.Equal(t, fmt.Sprintf("%s\n", expected), w.Body.String())
+	assert.Equal(t, minifyJSON(expected), minifyJSON(w.Body.String()))
 }
 
 func TestLocation(t *testing.T) {
@@ -95,6 +97,12 @@ func TestLocation(t *testing.T) {
 
 func minifyHTML(raw string) string {
 	out, _ := minHTML.String("text/html", raw)
+
+	return out
+}
+
+func minifyJSON(raw string) string {
+	out, _ := minJSON.String("text/json", raw)
 
 	return out
 }
