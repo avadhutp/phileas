@@ -14,38 +14,26 @@ import (
 )
 
 var (
-	testDB       = &gorm.DB{}
 	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "yelptype", "yelpurl"}
+
+	db      gorm.DB
+	service *gin.Engine
 )
 
 func init() {
-	tables := []interface{}{&Entry{}, &Location{}}
-
 	db, _ := gorm.Open("testdb", "")
-	db.AutoMigrate(tables...)
 
-	testDB = &db
-}
-
-func getSUT() *gin.Engine {
 	cfg := &Cfg{}
 	cfg.Common.GoogleMapsKey = "test-key"
 
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
-
-	r := NewService(cfg, testDB, &InstaAPI{})
-
-	tmpl, _ := template.New("mapper.tmpl").Parse(`{{ .title }} | {{ .key }}`)
-	r.SetHTMLTemplate(tmpl)
-
-	return r
+	service = NewService(cfg, &db, &InstaAPI{})
 }
 
 func peformRequest(method string, path string) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(method, path, nil)
-	sut := getSUT()
-	sut.ServeHTTP(w, req)
+	service.ServeHTTP(w, req)
 
 	return w
 }
@@ -58,6 +46,9 @@ func TestPing(t *testing.T) {
 }
 
 func TestMapper(t *testing.T) {
+	tmpl, _ := template.New("mapper.tmpl").Parse(`{{ .title }} | {{ .key }}`)
+	service.SetHTMLTemplate(tmpl)
+
 	w := peformRequest("GET", "/top")
 
 	assert.Equal(t, http.StatusOK, w.Code)
