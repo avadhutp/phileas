@@ -5,11 +5,9 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gin-gonic/gin"
-
 	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewService(t *testing.T) {
