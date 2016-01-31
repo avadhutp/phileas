@@ -2,6 +2,8 @@ package lib
 
 import (
 	"fmt"
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/html"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -15,6 +17,7 @@ import (
 
 var (
 	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "yelptype", "yelpurl"}
+	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
 
 	db      gorm.DB
 	service *gin.Engine
@@ -67,4 +70,30 @@ func TestTopJSON(t *testing.T) {
 	w := peformRequest("GET", "/top.json")
 
 	assert.Equal(t, fmt.Sprintf("%s\n", expected), w.Body.String())
+}
+
+func TestLocation(t *testing.T) {
+	sql := `SELECT  * FROM "entries"  WHERE ("location_id" = ?)`
+	result := `
+	1, instagram, 12345, http://thumbnail/url, http://full/url, test caption, 12345678, 1
+	`
+	expected := `
+	<div class="row">
+		<div class="left"><a href="http://full/url" target="_blank"><img src="http://thumbnail/url" /></a></div>
+        <div class="right">test caption</div>
+    </div>
+	`
+	testdb.StubQuery(sql, testdb.RowsFromCSVString(entryCols, result))
+	w := peformRequest("GET", "/loc/1")
+
+	assert.Equal(t, minifyHTML(expected), minifyHTML(w.Body.String()))
+}
+
+func minifyHTML(raw string) string {
+	m := minify.New()
+	m.AddFunc("text/html", html.Minify)
+
+	out, _ := m.String("text/html", raw)
+
+	return out
 }
