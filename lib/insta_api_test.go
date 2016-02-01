@@ -24,7 +24,8 @@ func init() {
 
 	instaAPI = NewInstaAPI(cfg, &db)
 }
-func TestSaveLocation(t *testing.T) {
+
+func stubInsertLocation() {
 	sql := []string{
 		`SELECT  * FROM "locations"  WHERE ("long" = ?) AND ("name" = ?) AND ("lat" = ?) ORDER BY "locations"."id" ASC LIMIT 1`,
 		`SELECT  * FROM "locations"  WHERE ("long" = ?) AND ("lat" = ?) AND ("name" = ?) ORDER BY "locations"."id" ASC LIMIT 1`,
@@ -40,6 +41,11 @@ func TestSaveLocation(t *testing.T) {
 	for _, q := range sql {
 		testdb.StubQuery(q, testdb.RowsFromCSVString(locationCols, result))
 	}
+}
+
+func TestSaveLocation(t *testing.T) {
+	testdb.Reset()
+	stubInsertLocation()
 
 	expected := &Location{
 		ID:       1,
