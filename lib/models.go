@@ -9,6 +9,9 @@ import (
 var (
 	gormOpen        = gorm.Open
 	dbSingularTable = (*gorm.DB).SingularTable
+
+	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "yelptype", "yelpurl"}
+	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
 )
 
 // Entry Contains all of the instagrams likes indexed by required fields

@@ -1,13 +1,14 @@
 package lib
 
 import (
-	"github.com/tdewolff/minify"
-	"github.com/tdewolff/minify/html"
-	"github.com/tdewolff/minify/json"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/html"
+	"github.com/tdewolff/minify/json"
 
 	testdb "github.com/erikstmartin/go-testdb"
 	"github.com/gin-gonic/gin"
@@ -16,9 +17,6 @@ import (
 )
 
 var (
-	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "yelptype", "yelpurl"}
-	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
-
 	service *gin.Engine
 	minHTML = minify.New()
 	minJSON = minify.New()
