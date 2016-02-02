@@ -43,6 +43,24 @@ func stubInsertLocation() {
 	}
 }
 
+func TestSaveMediaWithoutLocation(t *testing.T) {
+	m := &instagram.Media{}
+	m.Location = nil
+
+	oldInstaAPISaveLocation := instaAPISaveLocation
+	defer func() { instaAPISaveLocation = oldInstaAPISaveLocation }()
+
+	isSaveLocationCalled := false
+	instaAPISaveLocation = func(*InstaAPI, *instagram.Media) *Location {
+		isSaveLocationCalled = true
+		return nil
+	}
+
+	instaAPI.saveMedia(m)
+
+	assert.False(t, isSaveLocationCalled, "Media's location is nil; this implies that the instagram post was not geotagged. Therefore, it should not be saved.")
+}
+
 func TestSaveLocation(t *testing.T) {
 	testdb.Reset()
 	stubInsertLocation()

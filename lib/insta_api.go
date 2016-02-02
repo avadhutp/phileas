@@ -13,9 +13,12 @@ const (
 	backfillWait      = 5 * time.Second
 )
 
+// DI
 var (
 	getLikedMedia = (*instagram.UsersService).LikedMedia
 	timeSleep     = time.Sleep
+
+	instaAPISaveLocation = (*InstaAPI).saveLocation
 )
 
 // InstaAPI encapsulate functionality for all instagram functionality
@@ -73,7 +76,7 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 		return
 	}
 
-	loc := i.saveLocation(m)
+	loc := instaAPISaveLocation(i, m)
 	var e Entry
 	i.db.FirstOrCreate(&e, Entry{
 		Type:       "instagram",
