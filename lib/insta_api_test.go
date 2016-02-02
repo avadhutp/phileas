@@ -54,6 +54,7 @@ func TestSaveMedia(t *testing.T) {
 	images.Thumbnail = thumbnail
 
 	m := &instagram.Media{}
+	m.Location = &instagram.MediaLocation{}
 	m.ID = "test-id"
 	m.Images = images
 	m.Link = "http://full.image/url"
@@ -63,7 +64,9 @@ func TestSaveMedia(t *testing.T) {
 	oldInstaAPISaveLocation := instaAPISaveLocation
 	defer func() { instaAPISaveLocation = oldInstaAPISaveLocation }()
 
+	isSaveLocationCalled := false
 	instaAPISaveLocation = func(*InstaAPI, *instagram.Media) *Location {
+		isSaveLocationCalled = true
 		loc := &Location{}
 		loc.ID = 123
 
@@ -71,6 +74,8 @@ func TestSaveMedia(t *testing.T) {
 	}
 
 	instaAPI.saveMedia(m)
+
+	assert.True(t, isSaveLocationCalled)
 }
 
 func TestSaveMediaWithoutLocation(t *testing.T) {
