@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"net/url"
 	"time"
 
@@ -53,7 +52,7 @@ func (i *InstaAPI) SaveLikes() {
 
 // Backfill Puts in historical likes
 func (i *InstaAPI) Backfill(maxLikeID string) {
-	logger.Info(fmt.Sprintf("Running backfill for %s", maxLikeID))
+	logger.Infof("Running backfill for %s", maxLikeID)
 
 	media, after, _ := getLikedMedia(i.client.Users, &instagram.Parameters{MaxID: maxLikeID})
 	afterURL, _ := url.Parse(after.NextURL)

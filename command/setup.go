@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/avadhutp/phileas/lib"
 	// mysql import is unnamed for use with gorm
 	_ "github.com/go-sql-driver/mysql"
@@ -23,7 +21,7 @@ var (
 )
 
 func setup(cmd *cobra.Command, args []string) {
-	logger.Info(fmt.Sprintf("Setting up Phileas; config at %s", cfgPath))
+	logger.Infof("Setting up Phileas; config at %s", cfgPath)
 
 	cfg := libNewCfg(cfgPath)
 

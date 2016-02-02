@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/avadhutp/phileas/lib"
@@ -21,7 +19,7 @@ var (
 )
 
 func startPhileas(cmd *cobra.Command, args []string) {
-	logger.Info(fmt.Sprintf("Starting Phileas; config's at %s", cfgPath))
+	logger.Infof("Starting Phileas; config's at %s", cfgPath)
 
 	cfg := libNewCfg(cfgPath)
 	db := libGetDB(cfg)

@@ -1,8 +1,6 @@
 package command
 
 import (
-	"fmt"
-
 	"github.com/avadhutp/phileas/lib"
 
 	"github.com/spf13/cobra"
@@ -19,7 +17,7 @@ var (
 )
 
 func backfillPhileas(cmd *cobra.Command, args []string) {
-	logger.Info(fmt.Sprintf("Backfilling Instagram likes for Phileas; config's at %s", cfgPath))
+	logger.Infof("Backfilling Instagram likes for Phileas; config's at %s", cfgPath)
 
 	cfg := libNewCfg(cfgPath)
 	db := libGetDB(cfg)
