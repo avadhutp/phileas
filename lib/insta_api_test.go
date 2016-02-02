@@ -43,6 +43,36 @@ func stubInsertLocation() {
 	}
 }
 
+func TestSaveMedia(t *testing.T) {
+	caption := &instagram.MediaCaption{}
+	caption.Text = "Test caption"
+
+	thumbnail := &instagram.MediaImage{}
+	thumbnail.URL = "http://test/url"
+
+	images := &instagram.MediaImages{}
+	images.Thumbnail = thumbnail
+
+	m := &instagram.Media{}
+	m.ID = "test-id"
+	m.Images = images
+	m.Link = "http://full.image/url"
+	m.Caption = caption
+	m.CreatedTime = 12345678
+
+	oldInstaAPISaveLocation := instaAPISaveLocation
+	defer func() { instaAPISaveLocation = oldInstaAPISaveLocation }()
+
+	instaAPISaveLocation = func(*InstaAPI, *instagram.Media) *Location {
+		loc := &Location{}
+		loc.ID = 123
+
+		return loc
+	}
+
+	instaAPI.saveMedia(m)
+}
+
 func TestSaveMediaWithoutLocation(t *testing.T) {
 	m := &instagram.Media{}
 	m.Location = nil
