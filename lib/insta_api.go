@@ -14,6 +14,11 @@ const (
 	backfillWait      = 5 * time.Second
 )
 
+var (
+	getLikedMedia = (*instagram.UsersService).LikedMedia
+	timeSleep     = time.Sleep
+)
+
 // InstaAPI encapsulate functionality for all instagram functionality
 type InstaAPI struct {
 	client *instagram.Client
@@ -36,13 +41,13 @@ func NewInstaAPI(cfg *Cfg, db *gorm.DB) *InstaAPI {
 // SaveLikes Inserts instagram likes into the DB
 func (i *InstaAPI) SaveLikes() {
 	for {
-		media, _, _ := i.client.Users.LikedMedia(nil)
+		media, _, _ := getLikedMedia(i.client.Users, nil)
 
 		for _, m := range media {
 			i.saveMedia(&m)
 		}
 
-		time.Sleep(waitBetweenChecks)
+		timeSleep(waitBetweenChecks)
 	}
 }
 
@@ -50,7 +55,7 @@ func (i *InstaAPI) SaveLikes() {
 func (i *InstaAPI) Backfill(maxLikeID string) {
 	logger.Info(fmt.Sprintf("Running backfill for %s", maxLikeID))
 
-	media, after, _ := i.client.Users.LikedMedia(&instagram.Parameters{MaxID: maxLikeID})
+	media, after, _ := getLikedMedia(i.client.Users, &instagram.Parameters{MaxID: maxLikeID})
 	afterURL, _ := url.Parse(after.NextURL)
 	maxLikeID = afterURL.Query().Get("max_like_id")
 
@@ -59,7 +64,7 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 	}
 
 	if maxLikeID != "" {
-		time.Sleep(backfillWait)
+		timeSleep(backfillWait)
 		i.Backfill(maxLikeID)
 	}
 }
