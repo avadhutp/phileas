@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"database/sql/driver"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,6 +45,8 @@ func stubInsertLocation() {
 }
 
 func TestSaveMedia(t *testing.T) {
+	testdb.Reset()
+
 	caption := &instagram.MediaCaption{}
 	caption.Text = "Test caption"
 
@@ -73,9 +76,18 @@ func TestSaveMedia(t *testing.T) {
 		return loc
 	}
 
+	isDBQueryCalled := false
+	testdb.SetQueryWithArgsFunc(func(query string, args []driver.Value) (driver.Rows, error) {
+		isDBQueryCalled = true
+		return testdb.RowsFromCSVString(entryCols, ``), nil
+	})
+
+	db, _ := gorm.Open("testdb", "")
+	instaAPI.db = &db
 	instaAPI.saveMedia(m)
 
 	assert.True(t, isSaveLocationCalled)
+	assert.True(t, isDBQueryCalled)
 }
 
 func TestSaveMediaWithoutLocation(t *testing.T) {
@@ -120,6 +132,8 @@ func TestSaveLocation(t *testing.T) {
 		Longitude: 1.0,
 	}
 
+	db, _ := gorm.Open("testdb", "")
+	instaAPI.db = &db
 	actual := instaAPI.saveLocation(m)
 
 	assert.Equal(t, expected, actual)
