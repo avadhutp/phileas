@@ -62,7 +62,7 @@ func TestBackfill(t *testing.T) {
 
 	saveMediaCallCnt := 0
 	instaAPISaveMedia = func(*InstaAPI, *instagram.Media) {
-		saveMediaCallCnt += 1
+		saveMediaCallCnt++
 	}
 
 	instaAPIBackfillCalled := false
