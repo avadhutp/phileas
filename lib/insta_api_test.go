@@ -44,6 +44,39 @@ func stubInsertLocation() {
 	}
 }
 
+func TestBackfill(t *testing.T) {
+	oldGetLikedMedia := getLikedMedia
+	oldInstaAPISaveMedia := instaAPISaveMedia
+
+	defer func() {
+		getLikedMedia = oldGetLikedMedia
+		instaAPISaveMedia = oldInstaAPISaveMedia
+	}()
+
+	saveMediaCallCnt := 0
+	instaAPISaveMedia = func(*InstaAPI, *instagram.Media) {
+		saveMediaCallCnt += 1
+	}
+
+	getLikedMedia = func(*instagram.UsersService, *instagram.Parameters) ([]instagram.Media, *instagram.ResponsePagination, error) {
+		r := &instagram.ResponsePagination{
+			NextURL:   "http://some.random.url",
+			NextMaxID: "",
+		}
+
+		m := []instagram.Media{
+			*(&instagram.Media{}),
+			*(&instagram.Media{}),
+		}
+
+		return m, r, nil
+	}
+
+	instaAPI.Backfill("")
+
+	assert.Equal(t, 2, saveMediaCallCnt)
+}
+
 func TestSaveMedia(t *testing.T) {
 	testdb.Reset()
 

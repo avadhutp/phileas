@@ -19,6 +19,7 @@ var (
 	timeSleep     = time.Sleep
 
 	instaAPISaveLocation = (*InstaAPI).saveLocation
+	instaAPISaveMedia    = (*InstaAPI).saveMedia
 )
 
 // InstaAPI encapsulate functionality for all instagram functionality
@@ -62,7 +63,7 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 	maxLikeID = afterURL.Query().Get("max_like_id")
 
 	for _, m := range media {
-		i.saveMedia(&m)
+		instaAPISaveMedia(i, &m)
 	}
 
 	if maxLikeID != "" {
