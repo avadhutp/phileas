@@ -15,12 +15,18 @@ const (
 
 // DI
 var (
-	getLikedMedia = (*instagram.UsersService).LikedMedia
-	timeSleep     = time.Sleep
-
-	instaAPISaveLocation = (*InstaAPI).saveLocation
-	instaAPISaveMedia    = (*InstaAPI).saveMedia
+	getLikedMedia        = (*instagram.UsersService).LikedMedia
+	timeSleep            = time.Sleep
+	instaAPISaveLocation func(*InstaAPI, *instagram.Media) *Location
+	instaAPISaveMedia    func(*InstaAPI, *instagram.Media)
+	instaAPIBackfill     func(*InstaAPI, string)
 )
+
+func init() {
+	instaAPISaveLocation = (*InstaAPI).saveLocation
+	instaAPISaveMedia = (*InstaAPI).saveMedia
+	instaAPIBackfill = (*InstaAPI).Backfill
+}
 
 // InstaAPI encapsulate functionality for all instagram functionality
 type InstaAPI struct {
@@ -68,7 +74,7 @@ func (i *InstaAPI) Backfill(maxLikeID string) {
 
 	if maxLikeID != "" {
 		timeSleep(backfillWait)
-		i.Backfill(maxLikeID)
+		instaAPIBackfill(i, maxLikeID)
 	}
 }
 

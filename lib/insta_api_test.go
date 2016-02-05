@@ -3,6 +3,7 @@ package lib
 import (
 	"database/sql/driver"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -47,34 +48,60 @@ func stubInsertLocation() {
 func TestBackfill(t *testing.T) {
 	oldGetLikedMedia := getLikedMedia
 	oldInstaAPISaveMedia := instaAPISaveMedia
+	oldInstaAPIBackfill := instaAPIBackfill
+	oldTimeSleep := timeSleep
 
 	defer func() {
 		getLikedMedia = oldGetLikedMedia
 		instaAPISaveMedia = oldInstaAPISaveMedia
+		instaAPIBackfill = oldInstaAPIBackfill
+		timeSleep = oldTimeSleep
 	}()
+
+	timeSleep = func(time.Duration) {}
 
 	saveMediaCallCnt := 0
 	instaAPISaveMedia = func(*InstaAPI, *instagram.Media) {
 		saveMediaCallCnt += 1
 	}
 
-	getLikedMedia = func(*instagram.UsersService, *instagram.Parameters) ([]instagram.Media, *instagram.ResponsePagination, error) {
-		r := &instagram.ResponsePagination{
-			NextURL:   "http://some.random.url",
-			NextMaxID: "",
-		}
-
-		m := []instagram.Media{
-			*(&instagram.Media{}),
-			*(&instagram.Media{}),
-		}
-
-		return m, r, nil
+	instaAPIBackfillCalled := false
+	instaAPIBackfill = func(*InstaAPI, string) {
+		instaAPIBackfillCalled = true
 	}
 
-	instaAPI.Backfill("")
+	tests := []struct {
+		nextURL        string
+		shouldBackfill bool
+		msg            string
+	}{
+		{nextURL: "http://some.random.url", shouldBackfill: false, msg: "No more pages, so stop backfilling"},
+		{nextURL: "http://some.random.url?max_like_id=124", shouldBackfill: true, msg: "*instagram.ResponsePagination indicates that there are more pages, so stop backfilling"},
+	}
 
-	assert.Equal(t, 2, saveMediaCallCnt)
+	for _, test := range tests {
+		saveMediaCallCnt = 0
+		instaAPIBackfillCalled = false
+
+		getLikedMedia = func(*instagram.UsersService, *instagram.Parameters) ([]instagram.Media, *instagram.ResponsePagination, error) {
+			r := &instagram.ResponsePagination{
+				NextURL:   test.nextURL,
+				NextMaxID: "",
+			}
+
+			m := []instagram.Media{
+				*(&instagram.Media{}),
+				*(&instagram.Media{}),
+			}
+
+			return m, r, nil
+		}
+
+		instaAPI.Backfill("")
+
+		assert.Equal(t, 2, saveMediaCallCnt, test.msg)
+		assert.Equal(t, test.shouldBackfill, instaAPIBackfillCalled, test.msg)
+	}
 }
 
 func TestSaveMedia(t *testing.T) {
