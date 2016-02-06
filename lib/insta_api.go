@@ -15,8 +15,9 @@ const (
 
 // DI
 var (
-	getLikedMedia        = (*instagram.UsersService).LikedMedia
-	timeSleep            = time.Sleep
+	getLikedMedia = (*instagram.UsersService).LikedMedia
+	timeSleep     = time.Sleep
+
 	instaAPISaveLocation func(*InstaAPI, *instagram.Media) *Location
 	instaAPISaveMedia    func(*InstaAPI, *instagram.Media)
 	instaAPIBackfill     func(*InstaAPI, string)
