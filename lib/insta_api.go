@@ -21,12 +21,14 @@ var (
 	instaAPISaveLocation func(*InstaAPI, *instagram.Media) *Location
 	instaAPISaveMedia    func(*InstaAPI, *instagram.Media)
 	instaAPIBackfill     func(*InstaAPI, string)
+	instaAPISaveLikes    func(*InstaAPI)
 )
 
 func init() {
 	instaAPISaveLocation = (*InstaAPI).saveLocation
 	instaAPISaveMedia = (*InstaAPI).saveMedia
 	instaAPIBackfill = (*InstaAPI).Backfill
+	instaAPISaveLikes = (*InstaAPI).SaveLikes
 }
 
 // InstaAPI encapsulate functionality for all instagram functionality
@@ -50,15 +52,14 @@ func NewInstaAPI(cfg *Cfg, db *gorm.DB) *InstaAPI {
 
 // SaveLikes Inserts instagram likes into the DB
 func (i *InstaAPI) SaveLikes() {
-	for {
-		media, _, _ := getLikedMedia(i.client.Users, nil)
+	media, _, _ := getLikedMedia(i.client.Users, nil)
 
-		for _, m := range media {
-			i.saveMedia(&m)
-		}
-
-		timeSleep(waitBetweenChecks)
+	for _, m := range media {
+		instaAPISaveMedia(i, &m)
 	}
+
+	timeSleep(waitBetweenChecks)
+	instaAPISaveLikes(i)
 }
 
 // Backfill Puts in historical likes

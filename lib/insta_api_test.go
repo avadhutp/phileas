@@ -45,6 +45,20 @@ func stubInsertLocation() {
 	}
 }
 
+func TestSaveLikes(t *testing.T) {
+	oldGetLikedMedia := getLikedMedia
+	oldInstaAPISaveMedia := instaAPISaveMedia
+	oldTimeSleep := timeSleep
+
+	defer func() {
+		getLikedMedia = oldGetLikedMedia
+		instaAPISaveMedia = oldInstaAPISaveMedia
+		timeSleep = oldTimeSleep
+	}()
+
+	timeSleep = func(time.Duration) {}
+}
+
 func TestBackfill(t *testing.T) {
 	oldGetLikedMedia := getLikedMedia
 	oldInstaAPISaveMedia := instaAPISaveMedia
