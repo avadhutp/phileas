@@ -243,3 +243,31 @@ func TestSaveLocation(t *testing.T) {
 
 	assert.Equal(t, expected, actual)
 }
+
+func TestGetCaption(t *testing.T) {
+	c := &instagram.MediaCaption{
+		CreatedTime: 12345678,
+		Text:        "test caption",
+		From:        nil,
+		ID:          "1",
+	}
+
+	fullMedia := &instagram.Media{}
+	fullMedia.Caption = c
+
+	emptyMedia := &instagram.Media{}
+	emptyMedia.Caption = nil
+
+	tests := []struct {
+		caption  *instagram.Media
+		expected string
+	}{
+		{emptyMedia, ""},
+		{fullMedia, "test caption"},
+	}
+
+	for _, test := range tests {
+		actual := getCaption(test.caption)
+		assert.Equal(t, test.expected, actual)
+	}
+}
