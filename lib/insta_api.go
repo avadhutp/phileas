@@ -1,11 +1,10 @@
 package lib
 
 import (
-	"net/url"
-	"time"
-
 	"github.com/gedex/go-instagram/instagram"
 	"github.com/jinzhu/gorm"
+	"net/url"
+	"time"
 )
 
 const (
@@ -92,7 +91,7 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 		VendorID:   m.ID,
 		Thumbnail:  m.Images.Thumbnail.URL,
 		URL:        m.Link,
-		Caption:    m.Caption.Text,
+		Caption:    getCaption(m),
 		Timestamp:  m.CreatedTime,
 		LocationID: loc.ID,
 	})
@@ -111,4 +110,12 @@ func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
 
 func (i *InstaAPI) isLocationOk(media *instagram.Media) bool {
 	return media.Location != nil
+}
+
+func getCaption(m *instagram.Media) string {
+	if m.Caption != nil {
+		return m.Caption.Text
+	}
+
+	return ""
 }
