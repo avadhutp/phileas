@@ -57,6 +57,35 @@ func TestSaveLikes(t *testing.T) {
 	}()
 
 	timeSleep = func(time.Duration) {}
+
+	saveMediaCallCnt := 0
+	instaAPISaveMedia = func(*InstaAPI, *instagram.Media) {
+		saveMediaCallCnt++
+	}
+
+	saveLikesCalled := false
+	instaAPISaveLikes = func(*InstaAPI) {
+		saveLikesCalled = true
+	}
+
+	getLikedMedia = func(*instagram.UsersService, *instagram.Parameters) ([]instagram.Media, *instagram.ResponsePagination, error) {
+		r := &instagram.ResponsePagination{
+			NextURL:   "",
+			NextMaxID: "",
+		}
+
+		m := []instagram.Media{
+			*(&instagram.Media{}),
+			*(&instagram.Media{}),
+		}
+
+		return m, r, nil
+	}
+
+	instaAPI.SaveLikes()
+
+	assert.Equal(t, 2, saveMediaCallCnt)
+	assert.True(t, saveLikesCalled)
 }
 
 func TestBackfill(t *testing.T) {
