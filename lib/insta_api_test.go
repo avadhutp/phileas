@@ -56,7 +56,8 @@ func TestSaveLikes(t *testing.T) {
 		timeSleep = oldTimeSleep
 	}()
 
-	timeSleep = func(time.Duration) {}
+	sleepCalled := false
+	timeSleep = func(time.Duration) { sleepCalled = true }
 
 	saveMediaCallCnt := 0
 	instaAPISaveMedia = func(*InstaAPI, *instagram.Media) {
@@ -85,6 +86,7 @@ func TestSaveLikes(t *testing.T) {
 	instaAPI.SaveLikes()
 
 	assert.Equal(t, 2, saveMediaCallCnt)
+	assert.True(t, sleepCalled)
 	assert.True(t, saveLikesCalled)
 }
 
