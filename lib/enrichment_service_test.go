@@ -1,13 +1,24 @@
 package lib
 
 import (
+	"testing"
 	"time"
 
+	_ "github.com/erikstmartin/go-testdb"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
-
-	"testing"
 )
+
+var (
+	es *EnrichmentService
+)
+
+func init() {
+	db, _ := gorm.Open("testdb", "")
+	cfg := &Cfg{}
+
+	es = NewEnrichmentService(cfg, &db)
+}
 
 func TestNewEnrichmentService(t *testing.T) {
 	cfg := &Cfg{}
