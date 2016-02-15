@@ -31,19 +31,11 @@ type mysqlConfig struct {
 	Database string `ini:"schema"`
 }
 
-type yelpConfig struct {
-	ConsumerKey       string `ini:"consumer_key"`
-	ConsumerSecret    string `ini:"consumer_secret"`
-	AccessToken       string `ini:"access_token"`
-	AccessTokenSecret string `ini:"access_token_secret"`
-}
-
 // Cfg Config map for phileas.ini
 type Cfg struct {
 	Common    common          `ini:"common"`
 	Instagram instagramConfig `ini:"instagram"`
 	Mysql     mysqlConfig     `ini:"mysql"`
-	Yelp      yelpConfig      `ini:"yelp"`
 }
 
 // NewCfg Gets the config struct

@@ -2,10 +2,9 @@ package lib
 
 import (
 	"errors"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"testing"
 )
 
 func TestNewCfg(t *testing.T) {
