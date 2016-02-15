@@ -1,10 +1,11 @@
 package lib
 
 import (
-	"github.com/gedex/go-instagram/instagram"
-	"github.com/jinzhu/gorm"
 	"net/url"
 	"time"
+
+	"github.com/gedex/go-instagram/instagram"
+	"github.com/jinzhu/gorm"
 )
 
 const (
@@ -15,7 +16,6 @@ const (
 // DI
 var (
 	getLikedMedia = (*instagram.UsersService).LikedMedia
-	timeSleep     = time.Sleep
 
 	instaAPISaveLocation func(*InstaAPI, *instagram.Media) *Location
 	instaAPISaveMedia    func(*InstaAPI, *instagram.Media)

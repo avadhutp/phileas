@@ -60,7 +60,7 @@ func (es *EnrichmentService) EnrichLocation() {
 	}
 
 	es.throttleWait(len(locs), typeLoc)
-	time.Sleep(es.waits[typeLoc])
+	timeSleep(es.waits[typeLoc])
 	esEnrichLocation(es)
 }
 
