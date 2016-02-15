@@ -13,6 +13,10 @@ const (
 	typeLoc = iota
 )
 
+var (
+	geocoderSetAPIKey = geocoder.SetAPIKey
+)
+
 const (
 	enrichmentLimit       = 10
 	waitBetweenEnrichment = 30 * time.Second
@@ -28,7 +32,7 @@ type EnrichmentService struct {
 
 // NewEnrichmentService Provider for EnrichmentService
 func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
-	geocoder.SetAPIKey(cfg.Common.MapquestKey)
+	geocoderSetAPIKey(cfg.Common.MapquestKey)
 
 	es := new(EnrichmentService)
 	es.db = db

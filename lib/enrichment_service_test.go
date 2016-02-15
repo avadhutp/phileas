@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 
@@ -15,7 +17,19 @@ func TestNewEnrichmentService(t *testing.T) {
 
 	db := &gorm.DB{}
 
+	oldGeocoderSetAPIKey := geocoderSetAPIKey
+	defer func() { geocoderSetAPIKey = oldGeocoderSetAPIKey }()
+
+	geocoderSetAPIKeyCalled := false
+	geocoderSetAPIKey = func(key string) {
+		if key == "test-key" {
+			geocoderSetAPIKeyCalled = true
+		}
+	}
+
 	actual := NewEnrichmentService(cfg, db)
 
 	assert.Equal(t, db, actual.db)
+	assert.True(t, geocoderSetAPIKeyCalled)
+	assert.Equal(t, map[int]time.Duration{typeLoc: waitBetweenEnrichment}, actual.waits)
 }
