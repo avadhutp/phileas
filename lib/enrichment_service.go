@@ -14,8 +14,13 @@ const (
 )
 
 var (
+	esEnrichLocation  func(*EnrichmentService)
 	geocoderSetAPIKey = geocoder.SetAPIKey
 )
+
+func init() {
+	esEnrichLocation = (*EnrichmentService).EnrichLocation
+}
 
 const (
 	enrichmentLimit       = 10
@@ -46,18 +51,17 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 
 // EnrichLocation Periodically check the DB and enrich records for city + country info
 func (es *EnrichmentService) EnrichLocation() {
-	for {
-		var locs []Location
-		es.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
+	var locs []Location
+	es.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
 
-		for _, loc := range locs {
-			geo := reverseGeocode(&loc)
-			es.updateLocGeo(geo, &loc)
-		}
-
-		es.throttleWait(len(locs), typeLoc)
-		time.Sleep(es.waits[typeLoc])
+	for _, loc := range locs {
+		geo := reverseGeocode(&loc)
+		es.updateLocGeo(geo, &loc)
 	}
+
+	es.throttleWait(len(locs), typeLoc)
+	time.Sleep(es.waits[typeLoc])
+	esEnrichLocation(es)
 }
 
 func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {
