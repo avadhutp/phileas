@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	typeYelp = iota
-	typeLoc
+	typeLoc = iota
 )
 
 const (
