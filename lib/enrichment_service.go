@@ -14,8 +14,10 @@ const (
 )
 
 var (
-	esEnrichLocation  func(*EnrichmentService)
-	geocoderSetAPIKey = geocoder.SetAPIKey
+	esEnrichLocation func(*EnrichmentService)
+
+	geocoderSetAPIKey      = geocoder.SetAPIKey
+	geocoderReverseGeocode = geocoder.ReverseGeocode
 )
 
 func init() {
@@ -92,7 +94,7 @@ func (es *EnrichmentService) throttleWait(found int, w int) {
 }
 
 func reverseGeocode(loc *Location) *geocoder.Location {
-	if geo, err := geocoder.ReverseGeocode(loc.Lat, loc.Long); err != nil {
+	if geo, err := geocoderReverseGeocode(loc.Lat, loc.Long); err != nil {
 		logger.Error(fmt.Sprintf("Reverse geocoding encountered and error: %s", err.Error()))
 	} else {
 		return geo
