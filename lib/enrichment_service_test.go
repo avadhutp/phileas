@@ -98,46 +98,56 @@ func TestEnrichLocationAllDone(t *testing.T) {
 }
 
 func TestEnrichLocationNoGeo(t *testing.T) {
-	resetSUT()
-	testdb.Reset()
-
-	insertCalled := false
-	testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
-		if strings.Contains(q, `INSERT INTO "locations"`) {
-			insertCalled = true
-		}
-
-		return vendor.NewTestResult(1, 0), nil
-	})
-
-	r := `
-	location-1, 1.0, 1.0, test address, UK, London, ,
-	`
-	stubQuery(r)
-
-	db, _ := gorm.Open("testdb", "")
-	sut.db = &db
-
-	oldEsEnrichLocation := esEnrichLocation
-	oldTimeSleep := timeSleep
-	oldGeocoderReverseGeocode := geocoderReverseGeocode
-
-	defer func() {
-		timeSleep = oldTimeSleep
-		esEnrichLocation = oldEsEnrichLocation
-		geocoderReverseGeocode = oldGeocoderReverseGeocode
-	}()
-
-	timeSleep = func(s time.Duration) {}
-	esEnrichLocation = func(*EnrichmentService) {}
-
-	geocoderReverseGeocode = func(float64, float64) (*geocoder.Location, error) {
-		g := &geocoder.Location{}
-		g.CountryCode = "UK"
-		return g, nil
+	tests := []struct {
+		country          string
+		shouldCallInsert bool
+		msg              string
+	}{
+		{country: "UK", shouldCallInsert: true, msg: "All ok, so DB insert should be called"},
 	}
 
-	sut.EnrichLocation()
+	for _, test := range tests {
+		resetSUT()
+		testdb.Reset()
 
-	assert.True(t, insertCalled)
+		insertCalled := false
+		testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
+			if strings.Contains(q, `INSERT INTO "locations"`) {
+				insertCalled = true
+			}
+
+			return vendor.NewTestResult(1, 0), nil
+		})
+
+		r := `
+		location-1, 1.0, 1.0, test address, UK, London, ,
+		`
+		stubQuery(r)
+
+		db, _ := gorm.Open("testdb", "")
+		sut.db = &db
+
+		oldEsEnrichLocation := esEnrichLocation
+		oldTimeSleep := timeSleep
+		oldGeocoderReverseGeocode := geocoderReverseGeocode
+
+		defer func() {
+			timeSleep = oldTimeSleep
+			esEnrichLocation = oldEsEnrichLocation
+			geocoderReverseGeocode = oldGeocoderReverseGeocode
+		}()
+
+		timeSleep = func(s time.Duration) {}
+		esEnrichLocation = func(*EnrichmentService) {}
+
+		geocoderReverseGeocode = func(float64, float64) (*geocoder.Location, error) {
+			g := &geocoder.Location{}
+			g.CountryCode = test.country
+			return g, nil
+		}
+
+		sut.EnrichLocation()
+
+		assert.Equal(t, test.shouldCallInsert, insertCalled, test.msg)
+	}
 }
