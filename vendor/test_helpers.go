@@ -15,6 +15,6 @@ func (r TestResult) RowsAffected() (int64, error) {
 }
 
 // NewTestResult Provides a new test result
-func NewTestResult(lastID int, rowsAffected int) TestResult {
-	return TestResult{1, 0}
+func NewTestResult(lastID int64, affectedRows int64) TestResult {
+	return TestResult{lastID, affectedRows}
 }
