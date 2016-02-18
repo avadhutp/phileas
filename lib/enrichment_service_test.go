@@ -25,11 +25,11 @@ func init() {
 }
 
 type testResult struct {
-	lastId       int64
+	lastID       int64
 	affectedRows int64
 }
 
-func (r testResult) LastInsertId() (int64, error) {
+func (r testResult) LastInsertID() (int64, error) {
 	return r.lastId, nil
 }
 
