@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/jasonwinn/geocoder"
+
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/html"
 	"github.com/tdewolff/minify/json"
@@ -130,6 +132,12 @@ func TestLocation(t *testing.T) {
 	w := peformRequest("GET", "/loc/1")
 
 	assert.Equal(t, minifyHTML(expected), minifyHTML(w.Body.String()))
+}
+
+func TestCacheCountryLatLong(t *testing.T) {
+	cache := cacheCountryLatLong("../static/country_latlon.csv")
+
+	assert.Equal(t, geocoder.LatLng{54.0000, -2.0000}, cache["GB"])
 }
 
 func minifyHTML(raw string) string {

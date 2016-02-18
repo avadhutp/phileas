@@ -19,7 +19,8 @@ import (
 )
 
 const (
-	imgTmpl = `
+	countryCacheFilePath = "static/country_latlon.csv"
+	imgTmpl              = `
 		<div class="row">
 			<div class="left"><a href="%s" target="_blank"><img src="%s" /></a></div>
 			<div class="right">%s</div>
@@ -51,7 +52,7 @@ func NewPhileasAPI(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *PhileasAPI {
 	api.db = db
 	api.instaAPI = instaAPI
 
-	api.countryCache = cacheCountryLatLong()
+	api.countryCache = cacheCountryLatLong(countryCacheFilePath)
 
 	return api
 }
@@ -147,8 +148,8 @@ func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	return col
 }
 
-func cacheCountryLatLong() map[string]geocoder.LatLng {
-	file, _ := os.Open("static/country_latlon.csv")
+func cacheCountryLatLong(path string) map[string]geocoder.LatLng {
+	file, _ := os.Open(path)
 	defer file.Close()
 
 	reader := csv.NewReader(bufio.NewReader(file))
