@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/avadhutp/phileas/vendor"
+
 	"github.com/jasonwinn/geocoder"
 
 	testdb "github.com/erikstmartin/go-testdb"
@@ -22,19 +24,6 @@ func init() {
 	cfg := &Cfg{}
 
 	sut = NewEnrichmentService(cfg, &db)
-}
-
-type testResult struct {
-	lastID       int64
-	affectedRows int64
-}
-
-func (r testResult) LastInsertID() (int64, error) {
-	return r.lastId, nil
-}
-
-func (r testResult) RowsAffected() (int64, error) {
-	return r.affectedRows, nil
 }
 
 func stubQuery(r string) {
@@ -117,7 +106,8 @@ func TestEnrichLocationNoGeo(t *testing.T) {
 		if strings.Contains(q, `INSERT INTO "locations"`) {
 			insertCalled = true
 		}
-		return testResult{1, 0}, nil
+
+		return vendor.NewTestResult(1, 0), nil
 	})
 
 	r := `
