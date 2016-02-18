@@ -71,10 +71,10 @@ func TestMapper(t *testing.T) {
 }
 
 func TestCountriesJSON(t *testing.T) {
-	sql := "SELECT  `id`, `country`, `lat`, `long`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
-	cols := []string{"id", "country", "lat", "long", "count"}
+	sql := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
+	cols := []string{"id", "country", "count"}
 	result := `
-	1, UK, 1.0, 1.0, 5
+	1, UK, 5
 	`
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(cols, result))
 	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"count":5,"country":"UK","id":1}}]}`
