@@ -56,6 +56,8 @@ func (es *EnrichmentService) EnrichLocation() {
 	var locs []Location
 	es.db.Limit(enrichmentLimit).Where("city = ? and country = ?", "", "").Find(&locs)
 
+	logger.Infof("Enriching %d locations", len(locs))
+
 	for _, loc := range locs {
 		geo := reverseGeocode(&loc)
 		es.updateLocGeo(geo, &loc)
