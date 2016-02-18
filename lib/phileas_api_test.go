@@ -75,7 +75,7 @@ func TestCountriesJSON(t *testing.T) {
 	1, UK, 1.0, 1.0, 5
 	`
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(cols, result))
-	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"count":5,"country":"UK","id":1}}]}`
+	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"count":5,"country":"UK","id":1}}]}`
 
 	w := peformRequest("GET", "/countries.json")
 
