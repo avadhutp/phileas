@@ -155,3 +155,21 @@ func TestEnrichLocationNoGeo(t *testing.T) {
 		assert.Equal(t, test.shouldCallInsert, insertCalled, test.msg)
 	}
 }
+
+func TestThrottleWait(t *testing.T) {
+	tests := []struct {
+		found                int
+		waitType             int
+		postThrottleInterval time.Duration
+	}{
+		{10, typeLoc, waitBetweenEnrichment},
+		{9, typeLoc, waitBetweenEnrichment * 2},
+	}
+
+	for _, test := range tests {
+		resetSUT()
+		sut.throttleWait(test.found, test.waitType)
+
+		assert.Equal(t, test.postThrottleInterval, sut.waits[test.waitType])
+	}
+}
