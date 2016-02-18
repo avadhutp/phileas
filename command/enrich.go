@@ -7,6 +7,8 @@ import (
 )
 
 var (
+	enrichLocations = (*lib.EnrichmentService).EnrichLocation
+
 	enrichCmd = &cobra.Command{
 		Use:   "enrich",
 		Short: "Enrich locations",
@@ -21,8 +23,8 @@ func enrichPhileas(cmd *cobra.Command, args []string) {
 	cfg := libNewCfg(cfgPath)
 	db := libGetDB(cfg)
 
-	enrichmentService := lib.NewEnrichmentService(cfg, db)
-	enrichmentService.EnrichLocation()
+	enrichmentService := libNewEnrichmentService(cfg, db)
+	enrichLocations(enrichmentService)
 
 	logger.Info("Enrichment done!")
 }

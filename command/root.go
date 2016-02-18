@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	cfgPath        string
-	logger         = log.WithFields(log.Fields{"package": "command"})
-	libNewCfg      = lib.NewCfg
-	libGetDB       = lib.GetDB
-	libNewInstaAPI = lib.NewInstaAPI
+	cfgPath                 string
+	logger                  = log.WithFields(log.Fields{"package": "command"})
+	libNewCfg               = lib.NewCfg
+	libGetDB                = lib.GetDB
+	libNewInstaAPI          = lib.NewInstaAPI
+	libNewEnrichmentService = lib.NewEnrichmentService
 
 	// RootCmd This represents the binary itself
 	RootCmd = &cobra.Command{
