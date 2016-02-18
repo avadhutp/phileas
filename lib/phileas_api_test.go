@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"database/sql/driver"
+	"errors"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -38,9 +40,13 @@ func init() {
 }
 
 func peformRequest(method string, path string) *httptest.ResponseRecorder {
+	return performRequestWithService(service, method, path)
+}
+
+func performRequestWithService(s *gin.Engine, method string, path string) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(method, path, nil)
-	service.ServeHTTP(w, req)
+	s.ServeHTTP(w, req)
 
 	return w
 }
@@ -62,6 +68,39 @@ func TestMapper(t *testing.T) {
 	assert.Equal(t, "Top destinations | test-key", w.Body.String())
 }
 
+func TestCountriesJSON(t *testing.T) {
+	sql := "SELECT  `id`, `country`, `lat`, `long`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
+	cols := []string{"id", "country", "lat", "long", "count"}
+	result := `
+	1, UK, 1.0, 1.0, 5
+	`
+	testdb.StubQuery(sql, testdb.RowsFromCSVString(cols, result))
+	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"count":5,"country":"UK","id":1}}]}`
+
+	w := peformRequest("GET", "/countries.json")
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, minifyJSON(expected), minifyJSON(w.Body.String()))
+}
+
+func TestCountriesJSONErrorHandling(t *testing.T) {
+	testdb.Reset()
+	testdb.SetQueryFunc(func(q string) (result driver.Rows, err error) {
+		return nil, errors.New("Test exception")
+	})
+
+	db, _ := gorm.Open("testdb", "")
+
+	cfg := &Cfg{}
+	cfg.Common.GoogleMapsKey = "test-key"
+	service := NewService(cfg, &db, &InstaAPI{})
+
+	w := performRequestWithService(service, "GET", "/countries.json")
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+	assert.Equal(t, "Test exception", w.Body.String())
+}
+
 func TestTopJSON(t *testing.T) {
 	sql := `SELECT * from "locations"`
 	result := `
@@ -77,7 +116,7 @@ func TestTopJSON(t *testing.T) {
 }
 
 func TestLocation(t *testing.T) {
-	sql := `SELECT  * FROM "entries"  WHERE ("location_id" = ?)`
+	sql := `SELECT * FROM "entries"  WHERE ("location_id" = ?)`
 	result := `
 	1, instagram, 12345, http://thumbnail/url, http://full/url, test caption, 12345678, 1
 	`

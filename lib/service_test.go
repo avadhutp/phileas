@@ -44,6 +44,11 @@ func TestNewService(t *testing.T) {
 		Path:    "/top.json",
 		Handler: nameOfFunction(api.topJSON),
 	})
+	assert.Contains(t, actual.Routes(), gin.RouteInfo{
+		Method:  "GET",
+		Path:    "/countries.json",
+		Handler: nameOfFunction(api.countriesJSON),
+	})
 }
 
 func nameOfFunction(f interface{}) string {

@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -73,6 +74,18 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 	})
 }
 
+// countriesJSON - /countries.json
+func (pe *PhileasAPI) countriesJSON(c *gin.Context) {
+	rows, err := pe.db.Table("location").Select("`id`, `country`, `lat`, `long`, count(*)").Group("country").Having("`country` != ''").Rows()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	} else {
+		col := makeGroupedGeoJSON(rows)
+		c.JSON(http.StatusOK, col)
+	}
+}
+
 // topJSON — /top.json
 func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	var locs []*Location
@@ -82,14 +95,41 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	c.JSON(http.StatusOK, col)
 }
 
+func makeGroupedGeoJSON(rows *sql.Rows) *geojson.FeatureCollection {
+	var all []*geojson.Feature
+
+	for rows.Next() {
+		var ID, count int
+		var country string
+		var lat, long float64
+
+		rows.Scan(&ID, &country, &lat, &long, &count)
+
+		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(long), geojson.CoordType(lat)})
+
+		props := map[string]interface{}{
+			"id":      ID,
+			"count":   count,
+			"country": country,
+		}
+
+		f := geojson.NewFeature(p, props, nil)
+		all = append(all, f)
+	}
+
+	col := geojson.NewFeatureCollection(all)
+	return col
+}
+
 func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
 	for _, loc := range locs {
 		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(loc.Long), geojson.CoordType(loc.Lat)})
+
 		props := map[string]interface{}{
-			"name": loc.Name,
 			"id":   loc.ID,
+			"name": loc.Name,
 		}
 
 		f := geojson.NewFeature(p, props, nil)

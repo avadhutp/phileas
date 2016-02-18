@@ -23,6 +23,7 @@ func NewService(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *gin.Engine {
 	s.GET("/loc/:location-id", api.location)
 	s.GET("/top", api.mapper)
 	s.GET("/top.json", api.topJSON)
+	s.GET("/countries.json", api.countriesJSON)
 
 	return s
 }
