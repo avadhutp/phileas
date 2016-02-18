@@ -9,5 +9,9 @@ import (
 func TestNewTestResult(t *testing.T) {
 	actual := NewTestResult(1, 1)
 
-	assert.Equal(t, TestResult{1, 1}, actual)
+	l, _ := actual.LastInsertId()
+	a, _ := actual.RowsAffected()
+
+	assert.Equal(t, 1, int(a))
+	assert.Equal(t, 1, int(l))
 }
