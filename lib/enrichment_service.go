@@ -73,14 +73,7 @@ func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location)
 
 	loc.Country = geo.CountryCode
 	loc.Address = makeAddress(geo)
-
-	if geo.City != "" {
-		loc.City = geo.City
-	} else if geo.County != "" {
-		loc.City = geo.County
-	} else if geo.State != "" {
-		loc.City = geo.State
-	}
+	copyGeoToLoc(loc, geo)
 
 	es.db.Save(loc)
 }
@@ -121,4 +114,14 @@ func makeAddress(geo *geocoder.Location) string {
 	}
 
 	return strings.Join(addr, ", ")
+}
+
+func copyGeoToLoc(loc *Location, geo *geocoder.Location) {
+	if geo.City != "" {
+		loc.City = geo.City
+	} else if geo.County != "" {
+		loc.City = geo.County
+	} else if geo.State != "" {
+		loc.City = geo.State
+	}
 }
