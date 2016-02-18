@@ -98,7 +98,7 @@ func TestEnrichLocationAllDone(t *testing.T) {
 	assert.True(t, esEnrichLocationCalled)
 }
 
-func TestEnrichLocationNoGeo(t *testing.T) {
+func TestEnrichLocation(t *testing.T) {
 	tests := []struct {
 		reverseGeocodeError error
 		country             string
@@ -147,6 +147,8 @@ func TestEnrichLocationNoGeo(t *testing.T) {
 		geocoderReverseGeocode = func(float64, float64) (*geocoder.Location, error) {
 			g := &geocoder.Location{}
 			g.CountryCode = test.country
+			g.City = "London"
+			g.County = "London"
 			return g, test.reverseGeocodeError
 		}
 
