@@ -175,3 +175,25 @@ func TestThrottleWait(t *testing.T) {
 		assert.Equal(t, test.postThrottleInterval, sut.waits[test.waitType])
 	}
 }
+
+func TestCopyGeoToLoc(t *testing.T) {
+	tests := []struct {
+		expectedCity string
+		input        geocoder.Location
+		msg          string
+	}{
+		{"", geocoder.Location{"", "", "", "", "", "", geocoder.LatLng{}, "", false}, "Empty geocoder.Location"},
+		{"London", geocoder.Location{"", "London", "", "", "", "", geocoder.LatLng{}, "", false}, "City in geocoder.Location.City field"},
+		{"London", geocoder.Location{"", "", "", "", "London", "", geocoder.LatLng{}, "", false}, "City in geocoder.Location.County field"},
+		{"London", geocoder.Location{"", "", "London", "", "", "", geocoder.LatLng{}, "", false}, "City in geocoder.Location.State field"},
+	}
+
+	for _, test := range tests {
+		loc := &Location{}
+		loc.City = ""
+
+		copyGeoToLoc(loc, &test.input)
+
+		assert.Equal(t, test.expectedCity, loc.City, test.msg)
+	}
+}
