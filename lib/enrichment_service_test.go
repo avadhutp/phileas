@@ -2,6 +2,7 @@ package lib
 
 import (
 	"database/sql/driver"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -99,12 +100,14 @@ func TestEnrichLocationAllDone(t *testing.T) {
 
 func TestEnrichLocationNoGeo(t *testing.T) {
 	tests := []struct {
-		country          string
-		shouldCallInsert bool
-		msg              string
+		reverseGeocodeError error
+		country             string
+		shouldCallInsert    bool
+		msg                 string
 	}{
-		{country: "UK", shouldCallInsert: true, msg: "All ok, so DB insert should be called"},
-		{country: "", shouldCallInsert: false, msg: "Reverse geocoding did not return a country, so DB insert should not be called"},
+		{nil, "UK", true, "All ok, so DB insert should be called"},
+		{nil, "", false, "Reverse geocoding did not return a country, so DB insert should not be called"},
+		{errors.New("Test error"), "", false, "Reverse geocoding failed with an error, so DB insert should not be called"},
 	}
 
 	for _, test := range tests {
@@ -144,7 +147,7 @@ func TestEnrichLocationNoGeo(t *testing.T) {
 		geocoderReverseGeocode = func(float64, float64) (*geocoder.Location, error) {
 			g := &geocoder.Location{}
 			g.CountryCode = test.country
-			return g, nil
+			return g, test.reverseGeocodeError
 		}
 
 		sut.EnrichLocation()
