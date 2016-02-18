@@ -104,6 +104,7 @@ func TestEnrichLocationNoGeo(t *testing.T) {
 		msg              string
 	}{
 		{country: "UK", shouldCallInsert: true, msg: "All ok, so DB insert should be called"},
+		{country: "", shouldCallInsert: false, msg: "Reverse geocoding did not return a country, so DB insert should not be called"},
 	}
 
 	for _, test := range tests {
