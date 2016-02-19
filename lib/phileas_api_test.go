@@ -35,7 +35,7 @@ func init() {
 	db, _ := gorm.Open("testdb", "")
 
 	cfg := &Cfg{}
-	cfg.Common.GoogleMapsKey = "test-key"
+	cfg.Google.BrowserKey = "test-key"
 
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
 	service = NewService(cfg, &db, &InstaAPI{})
@@ -102,7 +102,7 @@ func TestCountriesJSONErrorHandling(t *testing.T) {
 	db, _ := gorm.Open("testdb", "")
 
 	cfg := &Cfg{}
-	cfg.Common.GoogleMapsKey = "test-key"
+	cfg.Google.BrowserKey = "test-key"
 	service := NewService(cfg, &db, &InstaAPI{})
 
 	w := performRequestWithService(service, "GET", "/countries.json")

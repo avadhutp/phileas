@@ -5,6 +5,10 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/net/context"
+
+	"googlemaps.github.io/maps"
+
 	"github.com/jasonwinn/geocoder"
 	"github.com/jinzhu/gorm"
 )
@@ -33,9 +37,10 @@ const (
 
 // EnrichmentService Goes systematically and enriches existing Location records with city + country information
 type EnrichmentService struct {
-	db            *gorm.DB
-	sanitizeRegex *strings.Replacer
-	waits         map[int]time.Duration
+	db               *gorm.DB
+	sanitizeRegex    *strings.Replacer
+	waits            map[int]time.Duration
+	googleMapsClient *maps.Client
 }
 
 // NewEnrichmentService Provider for EnrichmentService
@@ -49,6 +54,8 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 		typeLoc:          waitBetweenEnrichment,
 		typeGooglePlaces: waitBetweenEnrichment,
 	}
+
+	es.googleMapsClient, _ = maps.NewClient(maps.WithAPIKey("AIzaSyBKLh4PJpmZF5YE4tQwul8yfld_Z-Qu_Gw"))
 
 	return es
 }
@@ -72,9 +79,16 @@ func (es *EnrichmentService) EnrichLocation() {
 
 func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 	var locs []Location
-	es.db.Limit(enrichmentLimit).Where("google_places_id = ?", "").Find(&locs)
+	es.db.Limit(enrichmentLimit).Where("google_places_id IS NULL").Find(&locs)
 
 	logger.Infof("Enriching %d locations for google places IDs", len(locs))
+
+	for _, loc := range locs {
+		req := newRadarSearch(&loc)
+		_, err := es.googleMapsClient.RadarSearch(context.Background(), req)
+
+		fmt.Println(err.Error())
+	}
 
 	es.throttleWait(len(locs), typeGooglePlaces)
 	timeSleep(es.waits[typeGooglePlaces])
@@ -139,4 +153,17 @@ func copyGeoToLoc(loc *Location, geo *geocoder.Location) {
 	} else if geo.State != "" {
 		loc.City = geo.State
 	}
+}
+
+func newRadarSearch(l *Location) *maps.RadarSearchRequest {
+	r := &maps.RadarSearchRequest{}
+
+	r.Name = l.Name
+	r.Radius = 500
+	r.Location = &maps.LatLng{
+		Lat: l.Lat,
+		Lng: l.Long,
+	}
+
+	return r
 }

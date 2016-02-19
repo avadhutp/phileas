@@ -12,7 +12,6 @@ import (
 
 func TestNewService(t *testing.T) {
 	cfg := &Cfg{}
-	cfg.Common.GoogleMapsKey = "test-key"
 	api := NewPhileasAPI(cfg, &gorm.DB{}, &InstaAPI{})
 
 	oldGinLoadHTMLGlob := ginLoadHTMLGlob

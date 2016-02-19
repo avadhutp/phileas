@@ -31,11 +31,17 @@ type mysqlConfig struct {
 	Database string `ini:"schema"`
 }
 
+type googleConfig struct {
+	BrowserKey string `ini:"browser_key"`
+	ServerKey  string `ini:"server_key"`
+}
+
 // Cfg Config map for phileas.ini
 type Cfg struct {
 	Common    common          `ini:"common"`
 	Instagram instagramConfig `ini:"instagram"`
 	Mysql     mysqlConfig     `ini:"mysql"`
+	Google    googleConfig    `ini:"google"`
 }
 
 // NewCfg Gets the config struct

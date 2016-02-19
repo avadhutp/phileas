@@ -43,16 +43,16 @@ type LocEntry struct {
 
 // PhileasAPI Provides the data for phileas's API
 type PhileasAPI struct {
-	googleKey    string
-	instaAPI     *InstaAPI
-	db           *gorm.DB
-	countryCache map[string]CountryInfo
+	googleBrowserKey string
+	instaAPI         *InstaAPI
+	db               *gorm.DB
+	countryCache     map[string]CountryInfo
 }
 
 // NewPhileasAPI Go-style constructor to provide an instance of Phileas's API
 func NewPhileasAPI(cfg *Cfg, db *gorm.DB, instaAPI *InstaAPI) *PhileasAPI {
 	api := &PhileasAPI{}
-	api.googleKey = cfg.Common.GoogleMapsKey
+	api.googleBrowserKey = cfg.Google.BrowserKey
 
 	api.db = db
 	api.instaAPI = instaAPI
@@ -85,7 +85,7 @@ func (pe *PhileasAPI) location(c *gin.Context) {
 func (pe *PhileasAPI) mapper(c *gin.Context) {
 	c.HTML(http.StatusOK, "mapper.tmpl", gin.H{
 		"title": "Top destinations",
-		"key":   pe.googleKey,
+		"key":   pe.googleBrowserKey,
 	})
 }
 
