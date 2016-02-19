@@ -19,7 +19,8 @@ const (
 )
 
 var (
-	esEnrichLocation func(*EnrichmentService)
+	esEnrichLocation        func(*EnrichmentService)
+	esEnrichGooglePlacesIDs func(*EnrichmentService)
 
 	geocoderSetAPIKey      = geocoder.SetAPIKey
 	geocoderReverseGeocode = geocoder.ReverseGeocode
@@ -27,6 +28,7 @@ var (
 
 func init() {
 	esEnrichLocation = (*EnrichmentService).EnrichLocation
+	esEnrichGooglePlacesIDs = (*EnrichmentService).EnrichGooglePlacesIDs
 }
 
 const (
@@ -93,7 +95,7 @@ func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 
 	es.throttleWait(len(locs), typeGooglePlaces)
 	timeSleep(es.waits[typeGooglePlaces])
-	es.EnrichGooglePlacesIDs()
+	esEnrichGooglePlacesIDs()
 }
 
 func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {
