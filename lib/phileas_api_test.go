@@ -71,13 +71,21 @@ func TestMapper(t *testing.T) {
 }
 
 func TestCountriesJSON(t *testing.T) {
-	sql := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
-	cols := []string{"id", "country", "count"}
-	result := `
+	selectSql := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
+	selectCols := []string{"id", "country", "count"}
+	selectResult := `
 	1, UK, 5
 	`
-	testdb.StubQuery(sql, testdb.RowsFromCSVString(cols, result))
-	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"count":5,"country":"UK","id":1}}]}`
+	testdb.StubQuery(selectSql, testdb.RowsFromCSVString(selectCols, selectResult))
+
+	countSql := `SELECT  count(*) FROM "locations"  WHERE (country != ?)`
+	countCols := []string{"count"}
+	countResult := `
+	5
+	`
+	testdb.StubQuery(countSql, testdb.RowsFromCSVString(countCols, countResult))
+
+	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"country":"UK","id":1,"size":100}}]}`
 
 	w := peformRequest("GET", "/countries.json")
 
