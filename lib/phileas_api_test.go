@@ -85,7 +85,7 @@ func TestCountriesJSON(t *testing.T) {
 	`
 	testdb.StubQuery(countSql, testdb.RowsFromCSVString(countCols, countResult))
 
-	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"country":"UK","id":1,"size":100}}]}`
+	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"country":"","id":1,"size":100,"total":5}}]}`
 
 	w := peformRequest("GET", "/countries.json")
 
@@ -145,7 +145,14 @@ func TestLocation(t *testing.T) {
 func TestCacheCountryLatLong(t *testing.T) {
 	cache := cacheCountryLatLong("../static/country_latlon.csv")
 
-	assert.Equal(t, geocoder.LatLng{54.0000, -2.0000}, cache["GB"])
+	expected := CountryInfo{
+		name: "United Kingdom",
+		geo: geocoder.LatLng{
+			Lat: 55.378051,
+			Lng: -3.435973,
+		},
+	}
+	assert.Equal(t, expected, cache["GB"])
 }
 
 func minifyHTML(raw string) string {
