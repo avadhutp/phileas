@@ -29,5 +29,5 @@ func init() {
 	RootCmd.AddCommand(setupCmd)
 	RootCmd.AddCommand(backfillCmd)
 	RootCmd.AddCommand(startCmd)
-	RootCmd.AddCommand(enrichLocationsCmd)
+	RootCmd.AddCommand(enrichCmd)
 }

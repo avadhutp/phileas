@@ -72,7 +72,7 @@ func (es *EnrichmentService) EnrichLocation() {
 
 func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 	var locs []Location
-	es.db.Limit(enrichmentLimit).Where("google_places_id", "").Find(&locs)
+	es.db.Limit(enrichmentLimit).Where("google_places_id = ?", "").Find(&locs)
 
 	logger.Infof("Enriching %d locations for google places IDs", len(locs))
 
