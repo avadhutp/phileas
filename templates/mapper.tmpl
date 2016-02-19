@@ -97,6 +97,12 @@
 				clearAllMarkers(map);
 				map.data.loadGeoJson('top.json');
 
+				map.data.setStyle(function(feature) {
+					return {
+						icon: 'https://mt.google.com/vt/icon?psize=20&font=fonts/Roboto-Regular.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=48&scale=0.5&text=%E2%80%A2',
+					}
+				});
+
 				setCurrentlyShowing(MAP_LEVEL['PLACES']);
 			}
 			
