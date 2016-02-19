@@ -65,7 +65,7 @@ func TestNewEnrichmentService(t *testing.T) {
 
 	assert.Equal(t, db, actual.db)
 	assert.True(t, geocoderSetAPIKeyCalled)
-	assert.Equal(t, map[int]time.Duration{typeLoc: waitBetweenEnrichment}, actual.waits)
+	assert.Equal(t, map[int]time.Duration{typeLoc: waitBetweenEnrichment, typeGooglePlaces: waitBetweenEnrichment}, actual.waits)
 }
 
 func TestEnrichLocationAllDone(t *testing.T) {

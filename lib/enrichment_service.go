@@ -11,6 +11,7 @@ import (
 
 const (
 	typeLoc = iota
+	typeGooglePlaces
 )
 
 var (
@@ -45,7 +46,8 @@ func NewEnrichmentService(cfg *Cfg, db *gorm.DB) *EnrichmentService {
 	es.db = db
 	es.sanitizeRegex = strings.NewReplacer("-", "", ",", "")
 	es.waits = map[int]time.Duration{
-		typeLoc: waitBetweenEnrichment,
+		typeLoc:          waitBetweenEnrichment,
+		typeGooglePlaces: waitBetweenEnrichment,
 	}
 
 	return es
@@ -66,6 +68,17 @@ func (es *EnrichmentService) EnrichLocation() {
 	es.throttleWait(len(locs), typeLoc)
 	timeSleep(es.waits[typeLoc])
 	esEnrichLocation(es)
+}
+
+func (es *EnrichmentService) EnrichGooglePlacesIDs() {
+	var locs []Location
+	es.db.Limit(enrichmentLimit).Where("google_places_id", "").Find(&locs)
+
+	logger.Infof("Enriching %d locations for google places IDs", len(locs))
+
+	es.throttleWait(len(locs), typeGooglePlaces)
+	timeSleep(es.waits[typeGooglePlaces])
+	es.EnrichGooglePlacesIDs()
 }
 
 func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {

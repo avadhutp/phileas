@@ -7,24 +7,24 @@ import (
 )
 
 var (
-	enrichLocations = (*lib.EnrichmentService).EnrichLocation
+	esEnrichLocations = (*lib.EnrichmentService).EnrichLocation
 
-	enrichCmd = &cobra.Command{
-		Use:   "enrich",
+	enrichLocationsCmd = &cobra.Command{
+		Use:   "enrich-locations",
 		Short: "Enrich locations",
 		Long:  "Enrich locations with country and city information",
-		Run:   enrichPhileas,
+		Run:   enrichLocations,
 	}
 )
 
-func enrichPhileas(cmd *cobra.Command, args []string) {
+func enrichLocations(cmd *cobra.Command, args []string) {
 	logger.Infof("Enriching Instagram likes for Phileas with city/country information; config's at %s", cfgPath)
 
 	cfg := libNewCfg(cfgPath)
 	db := libGetDB(cfg)
 
 	enrichmentService := libNewEnrichmentService(cfg, db)
-	enrichLocations(enrichmentService)
+	esEnrichLocations(enrichmentService)
 
 	logger.Info("Enrichment done!")
 }

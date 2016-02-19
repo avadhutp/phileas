@@ -13,13 +13,13 @@ func TestEnrichPhileas(t *testing.T) {
 	oldLibNewCfg := libNewCfg
 	oldLibGetDB := libGetDB
 	oldLibNewEnrichmentService := libNewEnrichmentService
-	oldEnrichLocations := enrichLocations
+	oldESEnrichLocations := esEnrichLocations
 
 	defer func() {
 		libNewCfg = oldLibNewCfg
 		libGetDB = oldLibGetDB
 		libNewEnrichmentService = oldLibNewEnrichmentService
-		enrichLocations = oldEnrichLocations
+		esEnrichLocations = oldESEnrichLocations
 	}()
 
 	libNewCfg = func(string) *lib.Cfg {
@@ -31,13 +31,13 @@ func TestEnrichPhileas(t *testing.T) {
 	}
 
 	enrichCalled := false
-	enrichLocations = func(*lib.EnrichmentService) {
+	esEnrichLocations = func(*lib.EnrichmentService) {
 		enrichCalled = true
 	}
 
 	cmd := &cobra.Command{}
 	args := []string{}
-	enrichPhileas(cmd, args)
+	enrichLocations(cmd, args)
 
 	assert.True(t, enrichCalled)
 }
