@@ -47,6 +47,7 @@
 			var map;
 
 			window.currentlyShowing = 0;
+			window.currentListener = null;
 
 			function getCurrentlyShowing() {
 				return window.currentlyShowing;
@@ -60,6 +61,8 @@
 				map.data.forEach(function(feature) {
 					map.data.remove(feature);
 				});
+
+				google.maps.event.removeListener(window.currentListener);
 			}
 
 			function normalizeScale(scale) {
@@ -101,7 +104,7 @@
 					}
 				});
 
-				map.data.addListener('click', function(event) {
+				window.currentListener = map.data.addListener('click', function(event) {
 					infoWindow.setContent('<img src="static/ellipsis.svg" />')
 					infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
 					infoWindow.setPosition(event.feature.getGeometry().get());
@@ -133,6 +136,28 @@
 					return {
 						icon: 'https://mt.google.com/vt/icon?psize=20&font=fonts/Roboto-Regular.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=48&scale=0.5&text=%E2%80%A2',
 					}
+				});
+
+				window.currentListener = map.data.addListener('click', function(event) {
+					infoWindow.setContent('<img src="static/ellipsis.svg" />')
+					infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
+					infoWindow.setPosition(event.feature.getGeometry().get());
+					infoWindow.open(map);
+
+					$.ajax({
+						url: 'loc/' + event.feature.getProperty("id"),
+						success: function(data) {
+							infoWindow.setContent(
+								'<div id="content">'
+								+ '<b id="firstHeading">'
+								+ event.feature.getProperty("name") 
+								+ '</b>'
+								+ '<div id="bodyContent">' 
+								+ data 
+								+ '</div></div>'
+							);
+						}
+					});
 				});
 
 				setCurrentlyShowing(MAP_LEVEL['PLACES']);
