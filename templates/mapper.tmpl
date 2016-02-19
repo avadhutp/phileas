@@ -27,6 +27,11 @@
 				width: 70%;
 				text-align: justify;
 			}
+			#firstHeading {
+				display: block;
+				margin: 0.2em 0 0.5em 0;
+				font-size: 1.2em;
+			}
 		</style>
 	</head>
 	<body>
@@ -40,7 +45,6 @@
 			};
 
 			var map;
-			var infowindow;
 
 			window.currentlyShowing = 0;
 
@@ -95,6 +99,23 @@
 					return {
 					  icon: 'https://mt.google.com/vt/icon?psize=20&font=fonts/Roboto-Regular.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=48&scale=' + scale + '&text=%E2%80%A2',
 					}
+				});
+
+				map.data.addListener('click', function(event) {
+					infoWindow.setContent('<img src="static/ellipsis.svg" />')
+					infoWindow.setOptions({pixelOffset: new google.maps.Size(0,-30)});
+					infoWindow.setPosition(event.feature.getGeometry().get());
+					infoWindow.open(map);
+
+					infoWindow.setContent(
+						'<div id="content">'
+						+ '<b id="firstHeading">'
+						+ event.feature.getProperty("country") 
+						+ '</b>'
+						+ '<div id="bodyContent">' 
+						+ 'Number of places bookmarked: ' + event.feature.getProperty("total") 
+						+ '</div></div>'
+					);
 				});
 
 				setCurrentlyShowing(MAP_LEVEL['COUNTRY']);

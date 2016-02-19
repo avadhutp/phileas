@@ -27,6 +27,11 @@ const (
 		</div>`
 )
 
+type CountryInfo struct {
+	name string
+	geo  geocoder.LatLng
+}
+
 // LocEntry Results struct for MySQL join queries
 type LocEntry struct {
 	VendorID   string
@@ -41,7 +46,7 @@ type PhileasAPI struct {
 	googleKey    string
 	instaAPI     *InstaAPI
 	db           *gorm.DB
-	countryCache map[string]geocoder.LatLng
+	countryCache map[string]CountryInfo
 }
 
 // NewPhileasAPI Go-style constructor to provide an instance of Phileas's API
@@ -62,6 +67,7 @@ func (pe *PhileasAPI) ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
+// location - /loc/:location-id
 func (pe *PhileasAPI) location(c *gin.Context) {
 	l, _ := strconv.Atoi(c.Param("location-id"))
 	var entries []*Entry
@@ -107,7 +113,7 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	c.JSON(http.StatusOK, col)
 }
 
-func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]geocoder.LatLng, total int) *geojson.FeatureCollection {
+func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]CountryInfo, total int) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
 	for rows.Next() {
@@ -115,12 +121,13 @@ func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]geocoder.LatLng, total 
 		var country string
 
 		rows.Scan(&ID, &country, &count)
-		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(cache[country].Lng), geojson.CoordType(cache[country].Lat)})
+		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(cache[country].geo.Lng), geojson.CoordType(cache[country].geo.Lat)})
 
 		props := map[string]interface{}{
 			"id":      ID,
 			"size":    (float64(count*100) / float64(total)),
-			"country": country,
+			"country": cache[country].name,
+			"total":   count,
 		}
 
 		f := geojson.NewFeature(p, props, nil)
@@ -150,20 +157,23 @@ func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 	return col
 }
 
-func cacheCountryLatLong(path string) map[string]geocoder.LatLng {
+func cacheCountryLatLong(path string) map[string]CountryInfo {
 	file, _ := os.Open(path)
 	defer file.Close()
 
 	reader := csv.NewReader(bufio.NewReader(file))
 	rows, _ := reader.ReadAll()
-	cache := make(map[string]geocoder.LatLng, len(rows))
+	cache := make(map[string]CountryInfo, len(rows))
 
 	for i := range rows {
 		lat, _ := strconv.ParseFloat(rows[i][1], 64)
 		lng, _ := strconv.ParseFloat(rows[i][2], 64)
-		cache[rows[i][0]] = geocoder.LatLng{
-			Lat: lat,
-			Lng: lng,
+		cache[rows[i][0]] = CountryInfo{
+			name: rows[i][3],
+			geo: geocoder.LatLng{
+				Lat: lat,
+				Lng: lng,
+			},
 		}
 	}
 
