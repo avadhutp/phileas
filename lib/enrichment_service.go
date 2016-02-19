@@ -95,7 +95,7 @@ func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 
 	es.throttleWait(len(locs), typeGooglePlaces)
 	timeSleep(es.waits[typeGooglePlaces])
-	esEnrichGooglePlacesIDs()
+	esEnrichGooglePlacesIDs(es)
 }
 
 func (es *EnrichmentService) updateLocGeo(geo *geocoder.Location, loc *Location) {
