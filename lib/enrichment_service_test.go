@@ -39,7 +39,8 @@ func stubQuery(r string) {
 
 func resetSUT() {
 	sut.waits = map[int]time.Duration{
-		typeLoc: waitBetweenEnrichment,
+		typeLoc:          waitBetweenEnrichment,
+		typeGooglePlaces: waitBetweenEnrichment,
 	}
 }
 
@@ -66,6 +67,36 @@ func TestNewEnrichmentService(t *testing.T) {
 	assert.Equal(t, db, actual.db)
 	assert.True(t, geocoderSetAPIKeyCalled)
 	assert.Equal(t, map[int]time.Duration{typeLoc: waitBetweenEnrichment, typeGooglePlaces: waitBetweenEnrichment}, actual.waits)
+}
+
+func TestEnrichGooglePlacesAllDone(t *testing.T) {
+	resetSUT()
+	testdb.Reset()
+	stubQuery(``)
+
+	oldEsEnrichGooglePlacesIDs := esEnrichGooglePlacesIDs
+	oldTimeSleep := timeSleep
+
+	defer func() {
+		timeSleep = oldTimeSleep
+		esEnrichGooglePlacesIDs = oldEsEnrichGooglePlacesIDs
+	}()
+
+	var sleepFor time.Duration
+	timeSleep = func(s time.Duration) {
+		sleepFor = s
+	}
+
+	esEnrichGooglePlacesIDsCalled := false
+	esEnrichGooglePlacesIDs = func(*EnrichmentService) {
+		esEnrichGooglePlacesIDsCalled = true
+	}
+
+	sut.EnrichGooglePlacesIDs()
+
+	assert.Equal(t, waitBetweenEnrichment*2, sleepFor)
+	assert.Equal(t, waitBetweenEnrichment*2, sut.waits[typeGooglePlaces])
+	assert.True(t, esEnrichGooglePlacesIDsCalled)
 }
 
 func TestEnrichLocationAllDone(t *testing.T) {
