@@ -85,12 +85,15 @@ func (pe *PhileasAPI) mapper(c *gin.Context) {
 
 // countriesJSON - /countries.json
 func (pe *PhileasAPI) countriesJSON(c *gin.Context) {
+	var total int
+	pe.db.Model(&Location{}).Where("country != ?", "").Count(&total)
+
 	rows, err := pe.db.Table("location").Select("`id`, `country`, count(*)").Group("country").Having("`country` != ''").Rows()
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 	} else {
-		col := makeGroupedGeoJSON(rows, pe.countryCache)
+		col := makeGroupedGeoJSON(rows, pe.countryCache, total)
 		c.JSON(http.StatusOK, col)
 	}
 }
@@ -104,7 +107,7 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	c.JSON(http.StatusOK, col)
 }
 
-func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]geocoder.LatLng) *geojson.FeatureCollection {
+func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]geocoder.LatLng, total int) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
 	for rows.Next() {
@@ -116,7 +119,7 @@ func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]geocoder.LatLng) *geojs
 
 		props := map[string]interface{}{
 			"id":      ID,
-			"count":   count,
+			"size":    (float64(count*100) / float64(total)),
 			"country": country,
 		}
 

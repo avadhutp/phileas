@@ -58,6 +58,16 @@
 				});
 			}
 
+			function normalizeScale(scale) {
+				if (scale < 0.5) {
+					return 0.5;
+				} else if (scale > 1.5) {
+					return 1.5;
+				}
+
+				return scale;
+			}
+
 			function setMapCenter(map) {
 				if (navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition(function(position) {
@@ -80,9 +90,10 @@
 				map.data.loadGeoJson('countries.json');
 
 				map.data.setStyle(function(feature) {
-					country = feature.getProperty("country");
+					scale = normalizeScale(feature.getProperty('size'));
+					
 					return {
-					  icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=' + country + '|FF0000|000000',
+					  icon: 'https://mt.google.com/vt/icon?psize=20&font=fonts/Roboto-Regular.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=48&scale=' + scale + '&text=%E2%80%A2',
 					}
 				});
 
