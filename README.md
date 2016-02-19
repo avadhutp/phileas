@@ -48,15 +48,6 @@ client_id = xxxxxxxxxxxxxx
 secret = xxxxxxxxxxxxxxxx
 access_token = xxxxxxxx
 ```
-### Yelp
-Philea's use Yelp's API to enrich instagram likes with additional categorization information. Sign up for a Yelp API (v2) account and generate a new auth token at [www.yelp.co.uk/developers/manage_api_keys](https://www.yelp.co.uk/developers/manage_api_keys). Next, copy the required configuration into the `yelp` section of phileas's config file:
-```
-[yelp]
-consumer_key = xxxxxxxxxxxxxxxx
-consumer_secret = xxxxxxxxxxxxxxxx
-access_token = xxxxxxxxxxxxxxxx
-access_token_secret = xxxxxxxxxxxxxxxx
-```
 
 # URLs
 URL | Description | Expected HTTP code | Expected response |

@@ -10,7 +10,7 @@ var (
 	gormOpen        = gorm.Open
 	dbSingularTable = (*gorm.DB).SingularTable
 
-	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city"}
+	locationCols = []string{"id", "name", "lat", "long", "address", "country", "city", "google_places_id"}
 	entryCols    = []string{"id", "type", "vendorid", "thumbnail", "url", "caption", "timestamp", "loctionid"}
 )
 
@@ -28,13 +28,14 @@ type Entry struct {
 
 // Location Struct to hold all the location information
 type Location struct {
-	ID      int     `sql:"AUTO_INCREMENT"`
-	Name    string  `sql:"NOT NULL;type: varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
-	Lat     float64 `sql:"NOT NULL"`
-	Long    float64 `sql:"NOT NULL"`
-	Address string  `sql:"type: text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
-	Country string  `sql:"type: varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
-	City    string  `sql:"type: text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	ID             int     `sql:"AUTO_INCREMENT"`
+	Name           string  `sql:"NOT NULL;type: varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	Lat            float64 `sql:"NOT NULL"`
+	Long           float64 `sql:"NOT NULL"`
+	Address        string  `sql:"type: text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	Country        string  `sql:"type: varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	City           string  `sql:"type: text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"`
+	GooglePlacesID string  `sql:"type: varchar(255)"`
 }
 
 func getDBConnString(cfg *Cfg) string {
