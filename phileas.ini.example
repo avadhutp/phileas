@@ -14,9 +14,3 @@ schema = phileas
 client_id = 
 secret =  
 access_token = 
-
-[yelp]
-consumer_key = 
-consumer_secret = 
-access_token = 
-access_token_secret = 

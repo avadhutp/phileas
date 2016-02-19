@@ -124,7 +124,7 @@ func TestEnrichLocation(t *testing.T) {
 		})
 
 		r := `
-		location-1, 1.0, 1.0, test address, UK, London, ,
+		location-1, 1.0, 1.0, test address, UK, London
 		`
 		stubQuery(r)
 

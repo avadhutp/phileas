@@ -114,8 +114,8 @@ func TestCountriesJSONErrorHandling(t *testing.T) {
 func TestTopJSON(t *testing.T) {
 	sql := `SELECT * from "locations"`
 	result := `
-	1, location-1, 1.0, 1.0, test address, UK, London, NA, NA
-	2, location-2, 1.0, 1.0, test address, IN, Mumbai, NA, NA
+	1, location-1, 1.0, 1.0, test address, UK, London
+	2, location-2, 1.0, 1.0, test address, IN, Mumbai
 	`
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(locationCols, result))
 	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"id":1,"name":"location-1"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"id":2,"name":"location-2"}}]}`

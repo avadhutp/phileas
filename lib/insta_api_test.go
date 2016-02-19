@@ -37,7 +37,7 @@ func stubInsertLocation() {
 		`SELECT  * FROM "locations"  WHERE ("lat" = ?) AND ("long" = ?) AND ("name" = ?) ORDER BY "locations"."id" ASC LIMIT 1`,
 	}
 	result := `
-	1, location-1, 1.0, 1.0, test address, UK, London, ,
+	1, location-1, 1.0, 1.0, test address, UK, London
 	`
 
 	for _, q := range sql {
@@ -218,15 +218,13 @@ func TestSaveLocation(t *testing.T) {
 	stubInsertLocation()
 
 	expected := &Location{
-		ID:       1,
-		Name:     "location-1",
-		Lat:      1.0,
-		Long:     1.0,
-		Address:  "test address",
-		Country:  "UK",
-		City:     "London",
-		YelpType: "",
-		YelpURL:  "",
+		ID:      1,
+		Name:    "location-1",
+		Lat:     1.0,
+		Long:    1.0,
+		Address: "test address",
+		Country: "UK",
+		City:    "London",
 	}
 
 	m := &instagram.Media{}
