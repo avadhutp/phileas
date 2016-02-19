@@ -85,9 +85,10 @@ func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 
 	for _, loc := range locs {
 		req := newRadarSearch(&loc)
-		_, err := es.googleMapsClient.RadarSearch(context.Background(), req)
+		resp, _ := es.googleMapsClient.RadarSearch(context.Background(), req)
 
-		fmt.Println(err.Error())
+		loc.GooglePlacesID = getGooglePlacesID(&resp)
+		es.db.Save(loc)
 	}
 
 	es.throttleWait(len(locs), typeGooglePlaces)
@@ -158,7 +159,8 @@ func copyGeoToLoc(loc *Location, geo *geocoder.Location) {
 func newRadarSearch(l *Location) *maps.RadarSearchRequest {
 	r := &maps.RadarSearchRequest{}
 
-	r.Name = l.Name
+	// r.Name = l.Name
+	r.Keyword = l.Name
 	r.Radius = 500
 	r.Location = &maps.LatLng{
 		Lat: l.Lat,
@@ -166,4 +168,13 @@ func newRadarSearch(l *Location) *maps.RadarSearchRequest {
 	}
 
 	return r
+}
+
+func getGooglePlacesID(resp *maps.PlacesSearchResponse) string {
+	if len(resp.Results) == 0 {
+		return ""
+	}
+
+	place := resp.Results[0]
+	return place.PlaceID
 }
