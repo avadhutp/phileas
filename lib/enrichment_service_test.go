@@ -139,6 +139,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 		msg     string
 	}{
 		{"", "No result was found; therefore, location should be saved with an empty google places ID"},
+		{"test-place-id", "Place result was found; therefore, location should be saved with the resultant google places ID"},
 	}
 
 	for _, test := range tests {
@@ -150,6 +151,9 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 		testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
 			if strings.Contains(q, `UPDATE "locations"`) && argInSlice(int64(123), args) {
 				insertCalled = true
+			}
+			if len(test.placeID) > 0 && !argInSlice(string(test.placeID), args) {
+				insertCalled = false
 			}
 
 			return vendor.NewTestResult(1, 0), nil
