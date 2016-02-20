@@ -132,49 +132,67 @@ func TestEnrichLocationAllDone(t *testing.T) {
 }
 
 func TestEnrichGooglePlacesIDs(t *testing.T) {
-	resetSUT()
-	testdb.Reset()
-
-	insertCalled := false
-	testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
-		if strings.Contains(q, `INSERT INTO "locations"`) {
-			insertCalled = true
-		}
-
-		return vendor.NewTestResult(1, 0), nil
-	})
-
-	r := `
-	location-1, 1.0, 1.0, test address, UK, London
-	`
-	stubQuery(r)
-	db, _ := gorm.Open("testdb", "")
-	sut.db = &db
-
-	oldEsEnrichGooglePlacesIDs := esEnrichGooglePlacesIDs
-	oldTimeSleep := timeSleep
-	oldRadarSearch := radarSearch
-
-	defer func() {
-		esEnrichGooglePlacesIDs = oldEsEnrichGooglePlacesIDs
-		timeSleep = oldTimeSleep
-		radarSearch = oldRadarSearch
-	}()
-
-	timeSleep = func(s time.Duration) {}
-	esEnrichGooglePlacesIDs = func(*EnrichmentService) {}
-
-	radarSearch = func(*maps.Client, context.Context, *maps.RadarSearchRequest) (maps.PlacesSearchResponse, error) {
-		results := []maps.PlacesSearchResult{}
-		resp := maps.PlacesSearchResponse{}
-		resp.Results = results
-
-		return resp, nil
+	tests := []struct {
+		placeID          string
+		shouldLocBeSaved bool
+		msg              string
+	}{
+		{"", false, "No result was found for the places search; therefore, the locaction need not be saved"},
+		{"test-place-id", false, "No result was found for the places search; therefore, the locaction need not be saved"},
 	}
 
-	sut.EnrichGooglePlacesIDs()
+	for _, test := range tests {
 
-	assert.False(t, insertCalled)
+		resetSUT()
+		testdb.Reset()
+
+		insertCalled := false
+		testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
+			if strings.Contains(q, `INSERT INTO "locations"`) {
+				insertCalled = true
+			}
+
+			return vendor.NewTestResult(1, 0), nil
+		})
+
+		r := `
+	location-1, 1.0, 1.0, test address, UK, London
+	`
+		stubQuery(r)
+		db, _ := gorm.Open("testdb", "")
+		sut.db = &db
+
+		oldEsEnrichGooglePlacesIDs := esEnrichGooglePlacesIDs
+		oldTimeSleep := timeSleep
+		oldRadarSearch := radarSearch
+
+		defer func() {
+			esEnrichGooglePlacesIDs = oldEsEnrichGooglePlacesIDs
+			timeSleep = oldTimeSleep
+			radarSearch = oldRadarSearch
+		}()
+
+		timeSleep = func(s time.Duration) {}
+		esEnrichGooglePlacesIDs = func(*EnrichmentService) {}
+
+		radarSearch = func(*maps.Client, context.Context, *maps.RadarSearchRequest) (maps.PlacesSearchResponse, error) {
+			results := []maps.PlacesSearchResult{}
+			if len(test.placeID) > 0 {
+				place := maps.PlacesSearchResult{}
+				place.PlaceID = test.placeID
+				results = append(results, place)
+			}
+
+			resp := maps.PlacesSearchResponse{}
+			resp.Results = results
+
+			return resp, nil
+		}
+
+		sut.EnrichGooglePlacesIDs()
+
+		assert.Equal(t, test.shouldLocBeSaved, insertCalled, test.msg)
+	}
 }
 
 func TestEnrichLocation(t *testing.T) {
