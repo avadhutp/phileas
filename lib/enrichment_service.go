@@ -24,6 +24,7 @@ var (
 
 	geocoderSetAPIKey      = geocoder.SetAPIKey
 	geocoderReverseGeocode = geocoder.ReverseGeocode
+	radarSearch            = (*maps.Client).RadarSearch
 )
 
 func init() {
@@ -87,7 +88,7 @@ func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 
 	for _, loc := range locs {
 		req := newRadarSearch(&loc)
-		resp, _ := es.googleMapsClient.RadarSearch(context.Background(), req)
+		resp, _ := radarSearch(es.googleMapsClient, context.Background(), req)
 
 		loc.GooglePlacesID = getGooglePlacesID(&resp)
 		es.db.Save(loc)
