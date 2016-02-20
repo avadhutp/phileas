@@ -3,6 +3,7 @@ package lib
 import (
 	"database/sql/driver"
 	"errors"
+	"fmt"
 	"golang.org/x/net/context"
 	"googlemaps.github.io/maps"
 	"strings"
@@ -32,6 +33,7 @@ func init() {
 func stubQuery(r string) {
 	sql := []string{
 		`SELECT  * FROM "locations"  WHERE (city = ? and country = ?) LIMIT 10`,
+		`SELECT  * FROM "locations"  WHERE (google_places_id IS NULL) LIMIT 10`,
 	}
 
 	for _, q := range sql {
@@ -133,12 +135,10 @@ func TestEnrichLocationAllDone(t *testing.T) {
 
 func TestEnrichGooglePlacesIDs(t *testing.T) {
 	tests := []struct {
-		placeID          string
-		shouldLocBeSaved bool
-		msg              string
+		placeID string
+		msg     string
 	}{
-		{"", false, "No result was found for the places search; therefore, the locaction need not be saved"},
-		{"test-place-id", false, "No result was found for the places search; therefore, the locaction need not be saved"},
+		{"", "No result was found; therefore, location should be saved with an empty google places ID"},
 	}
 
 	for _, test := range tests {
@@ -148,7 +148,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 
 		insertCalled := false
 		testdb.SetExecWithArgsFunc(func(q string, args []driver.Value) (result driver.Result, err error) {
-			if strings.Contains(q, `INSERT INTO "locations"`) {
+			if strings.Contains(q, `UPDATE "locations"`) && argInSlice(int64(123), args) {
 				insertCalled = true
 			}
 
@@ -156,8 +156,8 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 		})
 
 		r := `
-	location-1, 1.0, 1.0, test address, UK, London
-	`
+		123, location-1, 1.0, 1.0, test address, UK, London,
+		`
 		stubQuery(r)
 		db, _ := gorm.Open("testdb", "")
 		sut.db = &db
@@ -175,7 +175,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 		timeSleep = func(s time.Duration) {}
 		esEnrichGooglePlacesIDs = func(*EnrichmentService) {}
 
-		radarSearch = func(*maps.Client, context.Context, *maps.RadarSearchRequest) (maps.PlacesSearchResponse, error) {
+		radarSearch = func(client *maps.Client, c context.Context, req *maps.RadarSearchRequest) (maps.PlacesSearchResponse, error) {
 			results := []maps.PlacesSearchResult{}
 			if len(test.placeID) > 0 {
 				place := maps.PlacesSearchResult{}
@@ -191,7 +191,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 
 		sut.EnrichGooglePlacesIDs()
 
-		assert.Equal(t, test.shouldLocBeSaved, insertCalled, test.msg)
+		assert.True(t, insertCalled, test.msg)
 	}
 }
 
@@ -293,4 +293,14 @@ func TestCopyGeoToLoc(t *testing.T) {
 
 		assert.Equal(t, test.expectedCity, loc.City, test.msg)
 	}
+}
+
+func argInSlice(a driver.Value, list []driver.Value) bool {
+	for _, b := range list {
+		fmt.Println(a, b)
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
