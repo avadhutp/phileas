@@ -42,6 +42,7 @@
 				'COUNTRY': 1,
 				'CITY': 2,
 				'PLACES': 3,
+				'PLACES_AND_MORE': 4,
 			};
 
 			var map;
@@ -162,6 +163,17 @@
 
 				setCurrentlyShowing(MAP_LEVEL['PLACES']);
 			}
+
+			function showPlacesAndMore(map) {
+				if (getCurrentlyShowing() == MAP_LEVEL['PLACES_AND_MORE']) {
+					return;
+				}
+
+				clearAllMarkers(map);
+				map.data.loadGeoJson('top.json');
+
+				setCurrentlyShowing(MAP_LEVEL['PLACES_AND_MORE'])
+			}
 			
 			function initMap() {				
 				infoWindow = new google.maps.InfoWindow();
@@ -178,8 +190,13 @@
 						case 3:
 							showCountries(map);
 							break;
-						default:
+						case 4:
+						case 5:
+						case 6:
 							showPlaces(map);
+							break;
+						default:
+							showPlacesAndMore(map);
 							break;
 					}
 				});
