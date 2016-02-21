@@ -162,7 +162,6 @@ func copyGeoToLoc(loc *Location, geo *geocoder.Location) {
 func newRadarSearch(l *Location) *maps.RadarSearchRequest {
 	r := &maps.RadarSearchRequest{}
 
-	// r.Name = l.Name
 	r.Keyword = l.Name
 	r.Radius = 500
 	r.Location = &maps.LatLng{
