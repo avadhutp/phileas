@@ -13,9 +13,14 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// Types of waits for enrichment throttlings
 const (
 	typeLoc = iota
 	typeGooglePlaces
+)
+
+const (
+	MAX_RADIUS_FOR_PLACES_SEARCH = 500
 )
 
 var (
@@ -163,7 +168,7 @@ func newRadarSearch(l *Location) *maps.RadarSearchRequest {
 	r := &maps.RadarSearchRequest{}
 
 	r.Keyword = l.Name
-	r.Radius = 500
+	r.Radius = MAX_RADIUS_FOR_PLACES_SEARCH
 	r.Location = &maps.LatLng{
 		Lat: l.Lat,
 		Lng: l.Long,
