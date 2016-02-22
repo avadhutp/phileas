@@ -20,13 +20,11 @@ Example:
 [common]
 port = 8081
 mapquest_key = XXXXX
-google_maps_key = XXXXX
 ```
 Setting | Description |
 --------|-------------|
 `port`  | Ther port number on which to start the Phileas server | 
 `mapquest_key` | Used for reverse geo coding. Can be gotten from [developer.mapquest.com](https://developer.mapquest.com) | 
-`google_maps_key` | Google Maps API key. Can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en) |
 ### Mysql
 Example:
 ```
@@ -47,6 +45,18 @@ Phileas needs to connect to the Instagram API to fetch your likes. For this, it 
 client_id = xxxxxxxxxxxxxx
 secret = xxxxxxxxxxxxxxxx
 access_token = xxxxxxxx
+```
+### Google
+Phileas needs to connec to google APIs for two things—
+
+1. To be able to display maps in a browser (browser API key is required)
+2. To query [Google Places API](https://developers.google.com/places/web-service/) for places information (server API key is required)
+
+Both these keys can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en).
+```
+[google]
+browser_key = xxxxxxxxxxxxxxxxxx
+server_key = xxxxxxxxxxxxxxxxxx
 ```
 
 # URLs
