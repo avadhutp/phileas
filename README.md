@@ -54,8 +54,7 @@ Phileas needs to connec to google APIs for two things—
 3. Make sure you enable
   1. Google Maps Javascript API
   2. Google Places API
-
-Both these keys can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en).
+4. Both these keys can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en). Create two keys—one for the browser and one for the server. And use these in the `ini` file as shown below:
 ```
 [google]
 browser_key = xxxxxxxxxxxxxxxxxx
