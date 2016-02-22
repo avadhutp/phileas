@@ -51,6 +51,9 @@ Phileas needs to connec to google APIs for two things—
 
 1. To be able to display maps in a browser (browser API key is required)
 2. To query [Google Places API](https://developers.google.com/places/web-service/) for places information (server API key is required)
+3. Make sure you enable
+  1. Google Maps Javascript API
+  2. Google Places API
 
 Both these keys can be gotten from [developers.google.com](https://developers.google.com/maps/signup?hl=en).
 ```
