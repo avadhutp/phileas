@@ -1,7 +1,6 @@
 [common]
 port = 8081
 mapquest_key = 
-google_maps_key = 
 
 [mysql]
 host = localhost
@@ -14,3 +13,7 @@ schema = phileas
 client_id = 
 secret =  
 access_token = 
+
+[google]
+browser_key = 
+server_key =
