@@ -64,5 +64,6 @@ URL | Description | Expected HTTP code | Expected response |
 ----|-------------|--------------------|-------------------|
 `/ping` | Healthcheck URL to see if the server is up and running | `200` | `pong` |
 `/top` | Shows a google map with the locations overlayed | `200` | Google map markup |
-`/top.json` | Locations from Phileas's databse encoded in the GeoJSON format | `200` | GeoJSON-encoded locations|
+`/countries.json` | Information about all the bookmarks in Phileas's database grouped by country; this information is encoded in the GeoJSON format | `200` | GeoJSON-encoded locations|
+`/top.json` | Locations from Phileas's database encoded, again, in the GeoJSON format | `200` | GeoJSON-encoded locations|
 `/loc/[location-id]` | Get's all images and their captions from Phileas's database | `200` | `HTML` with thumbnail images and captions |
