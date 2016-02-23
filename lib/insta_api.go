@@ -86,7 +86,11 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 
 	loc := instaAPISaveLocation(i, m)
 	var e Entry
-	i.db.FirstOrCreate(&e, Entry{
+	i.db.
+		Where(Entry{
+		VendorID: m.ID,
+	}).
+		FirstOrCreate(&e, Entry{
 		Type:       "instagram",
 		VendorID:   m.ID,
 		Thumbnail:  m.Images.Thumbnail.URL,
