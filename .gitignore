@@ -1,3 +1,6 @@
 phileas.ini
 *.sql
 coverage.txt
+
+.DS_Store
+*/.DS_Store
