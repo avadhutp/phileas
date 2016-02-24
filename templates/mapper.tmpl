@@ -37,6 +37,7 @@
 	<body>
 		<div id="map"></div>
 		<script>
+			var KNOWN_PLACE_ICON = 'https://mt.google.com/vt/icon?psize=20&font=fonts/Roboto-Regular.ttf&color=ff330000&name=icons/spotlight/spotlight-poi.png&ax=44&ay=48&scale=0.5&text=%E2%80%A2';
 			var INITIAL_MAP_ZOOM = 3;
 			var MAP_LEVEL = {
 				'COUNTRY': 1,
@@ -49,6 +50,7 @@
 
 			window.currentlyShowing = 0;
 			window.currentListener = null;
+			window.markers = [];
 
 			function getCurrentlyShowing() {
 				return window.currentlyShowing;
@@ -61,6 +63,10 @@
 			function clearAllMarkers(map) {
 				map.data.forEach(function(feature) {
 					map.data.remove(feature);
+				});
+
+				$.each(window.markers, function(k, v){
+					v.setMap(null);
 				});
 
 				google.maps.event.removeListener(window.currentListener);
@@ -170,6 +176,20 @@
 				}
 
 				showPlaces(map);
+				
+				map.data.forEach(function(feature) {
+					places_id = feature.getProperty("google_place_id");
+
+					if (places_id != "") {
+						marker = new google.maps.Marker({
+							position: feature.getGeometry().get(),
+							map: map,
+							icon: KNOWN_PLACE_ICON,
+						});
+
+						window.markers.push(marker);
+					}
+				});
 
 				setCurrentlyShowing(MAP_LEVEL['PLACES_AND_MORE']);
 			}
