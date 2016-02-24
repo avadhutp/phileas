@@ -169,10 +169,9 @@
 					return;
 				}
 
-				clearAllMarkers(map);
-				map.data.loadGeoJson('top.json');
+				showPlaces(map);
 
-				setCurrentlyShowing(MAP_LEVEL['PLACES_AND_MORE'])
+				setCurrentlyShowing(MAP_LEVEL['PLACES_AND_MORE']);
 			}
 			
 			function initMap() {				
