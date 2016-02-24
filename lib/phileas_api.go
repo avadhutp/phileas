@@ -145,8 +145,9 @@ func makeGeoJSON(locs []*Location) *geojson.FeatureCollection {
 		p := geojson.NewPoint(geojson.Coordinate{geojson.CoordType(loc.Long), geojson.CoordType(loc.Lat)})
 
 		props := map[string]interface{}{
-			"id":   loc.ID,
-			"name": loc.Name,
+			"id":              loc.ID,
+			"name":            loc.Name,
+			"google_place_id": loc.GooglePlacesID,
 		}
 
 		f := geojson.NewFeature(p, props, nil)

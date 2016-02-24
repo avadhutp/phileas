@@ -118,7 +118,7 @@ func TestTopJSON(t *testing.T) {
 	2, location-2, 1.0, 1.0, test address, IN, Mumbai
 	`
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(locationCols, result))
-	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"id":1,"name":"location-1"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"id":2,"name":"location-2"}}]}`
+	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"google_place_id":"","id":1,"name":"location-1"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"google_place_id":"","id":2,"name":"location-2"}}]}`
 
 	w := peformRequest("GET", "/top.json")
 
