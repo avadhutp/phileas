@@ -113,6 +113,33 @@ func (pe *PhileasAPI) topJSON(c *gin.Context) {
 	c.JSON(http.StatusOK, col)
 }
 
+// statsJSON - /stats.json
+func (pe *PhileasAPI) statsJSON(c *gin.Context) {
+	var totalLocations int
+	var gpEnriched int
+	var gpUnenriched int
+	var gpWithoutId int
+
+	pe.db.Model(&Location{}).Count(&totalLocations)
+
+	pe.db.Model(&Location{}).Where("google_places_id IS NOT NULL and google_places_id != ?", "").Count(&gpEnriched)
+	pe.db.Model(&Location{}).Where("google_places_id IS NULL").Count(&gpUnenriched)
+	pe.db.Model(&Location{}).Where("google_places_id = ?", "").Count(&gpWithoutId)
+
+	stats := map[string]interface{}{
+		"total_locations": totalLocations,
+		"enrichment": map[string]interface{}{
+			"google_places": map[string]interface{}{
+				"enriched":         gpEnriched,
+				"un_enriched":      gpUnenriched,
+				"without_place_id": gpWithoutId,
+			},
+		},
+	}
+
+	c.JSON(http.StatusOK, stats)
+}
+
 func makeGroupedGeoJSON(rows *sql.Rows, cache map[string]CountryInfo, total int) *geojson.FeatureCollection {
 	var all []*geojson.Feature
 
