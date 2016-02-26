@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"github.com/jasonwinn/geocoder"
@@ -71,11 +72,29 @@ func TestMapper(t *testing.T) {
 }
 
 func TestStatsJSON(t *testing.T) {
-	// expected := ""
+	countCols := []string{"count"}
+	sqlStubs := []struct {
+		query  string
+		output int
+	}{
+		{`SELECT  count(*) FROM "locations"`, 10},
+		{`SELECT  count(*) FROM "locations"  WHERE (google_places_id IS NOT NULL and google_places_id != ?)`, 20},
+		{`SELECT  count(*) FROM "locations"  WHERE (google_places_id IS NULL)`, 30},
+		{`SELECT  count(*) FROM "locations"  WHERE (google_places_id = ?)`, 40},
+	}
 
+	for _, stub := range sqlStubs {
+		result := `
+		` + strconv.Itoa(stub.output) + `
+		`
+		testdb.StubQuery(stub.query, testdb.RowsFromCSVString(countCols, result))
+	}
+
+	expected := `{"enrichment":{"google_places":{"enriched":20,"un_enriched":30,"without_place_id":40}},"total_locations":10}`
 	w := performRequest("GET", "/stats.json")
 
 	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, minifyJSON(expected), minifyJSON(w.Body.String()))
 }
 
 func TestCountriesJSON(t *testing.T) {

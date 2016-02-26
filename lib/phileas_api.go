@@ -126,6 +126,8 @@ func (pe *PhileasAPI) statsJSON(c *gin.Context) {
 	pe.db.Model(&Location{}).Where("google_places_id IS NULL").Count(&gpUnenriched)
 	pe.db.Model(&Location{}).Where("google_places_id = ?", "").Count(&gpWithoutId)
 
+	fmt.Printf("All nice %d", totalLocations)
+
 	stats := map[string]interface{}{
 		"total_locations": totalLocations,
 		"enrichment": map[string]interface{}{
