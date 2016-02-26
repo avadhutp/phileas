@@ -41,7 +41,7 @@ func init() {
 	service = NewService(cfg, &db, &InstaAPI{})
 }
 
-func peformRequest(method string, path string) *httptest.ResponseRecorder {
+func performRequest(method string, path string) *httptest.ResponseRecorder {
 	return performRequestWithService(service, method, path)
 }
 
@@ -54,7 +54,7 @@ func performRequestWithService(s *gin.Engine, method string, path string) *httpt
 }
 
 func TestPing(t *testing.T) {
-	w := peformRequest("GET", "/ping")
+	w := performRequest("GET", "/ping")
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "pong", w.Body.String())
@@ -64,7 +64,7 @@ func TestMapper(t *testing.T) {
 	tmpl, _ := template.New("mapper.tmpl").Parse(`{{ .title }} | {{ .key }}`)
 	service.SetHTMLTemplate(tmpl)
 
-	w := peformRequest("GET", "/top")
+	w := performRequest("GET", "/top")
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "Top destinations | test-key", w.Body.String())
@@ -73,7 +73,7 @@ func TestMapper(t *testing.T) {
 func TestStatsJSON(t *testing.T) {
 	// expected := ""
 
-	w := peformRequest("GET", "/stats.json")
+	w := performRequest("GET", "/stats.json")
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
@@ -95,7 +95,7 @@ func TestCountriesJSON(t *testing.T) {
 
 	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"country":"","id":1,"size":100,"total":5}}]}`
 
-	w := peformRequest("GET", "/countries.json")
+	w := performRequest("GET", "/countries.json")
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, minifyJSON(expected), minifyJSON(w.Body.String()))
@@ -128,7 +128,7 @@ func TestTopJSON(t *testing.T) {
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(locationCols, result))
 	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"google_place_id":"","id":1,"name":"location-1"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[1,1]},"properties":{"google_place_id":"","id":2,"name":"location-2"}}]}`
 
-	w := peformRequest("GET", "/top.json")
+	w := performRequest("GET", "/top.json")
 
 	assert.Equal(t, minifyJSON(expected), minifyJSON(w.Body.String()))
 }
@@ -145,7 +145,7 @@ func TestLocation(t *testing.T) {
     </div>
 	`
 	testdb.StubQuery(sql, testdb.RowsFromCSVString(entryCols, result))
-	w := peformRequest("GET", "/loc/1")
+	w := performRequest("GET", "/loc/1")
 
 	assert.Equal(t, minifyHTML(expected), minifyHTML(w.Body.String()))
 }
