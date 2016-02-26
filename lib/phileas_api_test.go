@@ -70,6 +70,14 @@ func TestMapper(t *testing.T) {
 	assert.Equal(t, "Top destinations | test-key", w.Body.String())
 }
 
+func TestStatsJSON(t *testing.T) {
+	// expected := ""
+
+	w := peformRequest("GET", "/stats.json")
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
 func TestCountriesJSON(t *testing.T) {
 	selectSql := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
 	selectCols := []string{"id", "country", "count"}
