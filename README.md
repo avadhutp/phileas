@@ -9,7 +9,8 @@ Phileas can tell you where you should travel next, based on your instagram likes
 2. Put it in `/etc/phileas.ini`; optionally, you can pass the location of the ini file at run time
 3. Download Phileas: `go get github.com/avadhutp/phileas`
 4. First, run setup as `phileas setup`; this will set up the required table structure 
-5. Next, initiate the backfill as `phileas backfill`; this will populate the database with all the historic data
+5. Second, initiate the backfill as `phileas backfill`; this will populate the database with all the historic data
+6. Next, you should initiate, in two seperate processes, `philease enrich locations` and `phileas enrich google-places`; this will also add some more information to the locations that will help when mapping them
 6. Finally, run the actual Phileas server by issuing `phileas start`; you can issue this command in parallel with the `backfill` command
 
 # Settings
