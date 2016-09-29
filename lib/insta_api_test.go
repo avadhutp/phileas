@@ -24,7 +24,7 @@ func init() {
 
 	db, _ := gorm.Open("testdb", "")
 
-	instaAPI = NewInstaAPI(cfg, &db)
+	instaAPI = NewInstaAPI(cfg, db)
 }
 
 func stubInsertLocation() {
@@ -188,7 +188,7 @@ func TestSaveMedia(t *testing.T) {
 	})
 
 	db, _ := gorm.Open("testdb", "")
-	instaAPI.db = &db
+	instaAPI.db = db
 	instaAPI.saveMedia(m)
 
 	assert.True(t, isSaveLocationCalled)
@@ -236,7 +236,7 @@ func TestSaveLocation(t *testing.T) {
 	}
 
 	db, _ := gorm.Open("testdb", "")
-	instaAPI.db = &db
+	instaAPI.db = db
 	actual := instaAPI.saveLocation(m)
 
 	assert.Equal(t, expected, actual)

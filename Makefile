@@ -1,13 +1,12 @@
-PKGS := \
-	. \
+deps:
+	@echo Getting dependencies for Phileas 🎩...
+	@go get github.com/mattn/gom
+	@gom install
 
-SOURCES := $(foreach pkg, $(PKGS), $(wildcard $(pkg)/*.go))
+test:
+	@echo Testing Phileas 🎩...
+	@(go list ./... | grep -v -e /vendor/ | xargs -L1 gom test -cover || exit;)
 
-lint: $(SOURCES)
-	@echo Linting phileas sources...
-	@go get -u github.com/golang/lint/golint
-	@go get -u github.com/GeertJohan/fgt
-	@$(go list ./... | grep -v /vendor | xargs -L1 golint || exit;)
-
-test: 
-	@go test -v ./...
+lint:
+	@echo Linting sources...
+	@(go list ./... | grep -v -e /vendor/ | xargs -L1 golint || exit;)

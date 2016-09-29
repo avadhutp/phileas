@@ -1,4 +1,4 @@
-package vendor
+package helpers
 
 // TestResult Test struct to help with stubbing insert queries for testdb; this has to be put in the vendor folder seperately because it fails golint (lastId instead of lastID is used). And this cannot be changed as the interface demanding this struct requires the variable/func names to be so.
 type TestResult struct {

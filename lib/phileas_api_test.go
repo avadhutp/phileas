@@ -39,7 +39,7 @@ func init() {
 	cfg.Google.BrowserKey = "test-key"
 
 	ginLoadHTMLGlob = func(*gin.Engine, string) {}
-	service = NewService(cfg, &db, &InstaAPI{})
+	service = NewService(cfg, db, &InstaAPI{})
 }
 
 func performRequest(method string, path string) *httptest.ResponseRecorder {
@@ -130,7 +130,7 @@ func TestCountriesJSONErrorHandling(t *testing.T) {
 
 	cfg := &Cfg{}
 	cfg.Google.BrowserKey = "test-key"
-	service := NewService(cfg, &db, &InstaAPI{})
+	service := NewService(cfg, db, &InstaAPI{})
 
 	w := performRequestWithService(service, "GET", "/countries.json")
 

@@ -1,0 +1,16 @@
+gom 'github.com/Sirupsen/logrus', :tag => 'v0.10.0'
+gom 'github.com/go-sql-driver/mysql', :tag => 'v1.2'
+gom 'github.com/jinzhu/gorm', :tag => 'v1.0'
+gom 'github.com/go-ini/ini', :tag => 'v1.21.1'
+gom 'github.com/gedex/go-instagram', :tag => '0.5'
+gom 'github.com/tdewolff/minify', :tag => 'v2.0.0'
+
+gom 'github.com/gin-gonic/gin', :commit => '5caaac4c5c712a9e7a7de29e6c24ef46c753017f'
+gom 'github.com/spf13/cobra', :commit => '9c28e4bbd74e5c3ed7aacbc552b2cab7cfdfe744'
+gom 'github.com/jasonwinn/geocoder', :commit => '9a863b98eafdbbc19f66e9b4760887ebdcb55c11'
+gom 'github.com/erikstmartin/go-testdb', :commit => '8d10e4a1bae52cd8b81ffdec3445890d6dccab3d'
+gom 'github.com/kpawlik/geojson', :commit => '03fc5b389cd1027cb3f5ce4aa97f0e6af61d8579'
+
+gom 'github.com/stretchr/testify/assert'
+gom 'golang.org/x/net/context'
+gom 'googlemaps.github.io/maps'

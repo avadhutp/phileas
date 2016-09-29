@@ -1,0 +1,263 @@
+!<arch>
+__.PKGDEF       0           0     0     644     30471     `
+go object darwin amd64 go1.6.2 X:none
+build id "59b43e1fd180414c11252ed3d2e190d4d1d245c4"
+
+$$
+package logrus_syslog
+	import fmt "fmt"
+	import os "os"
+	import logrus "github.com/Sirupsen/logrus"
+	import syslog "log/syslog"
+	type @"log/syslog".Priority int
+	import sync "sync" // indirect
+	type @"sync".Mutex struct { @"sync".state int32; @"sync".sema uint32 }
+	func (@"sync".mÂ·1 *@"sync".Mutex) Lock ()
+	func (@"sync".mÂ·1 *@"sync".Mutex) Unlock ()
+	type @"log/syslog".serverConn interface { @"log/syslog".close() (? error); @"log/syslog".writeString(@"log/syslog".p @"log/syslog".Priority, @"log/syslog".hostname string, @"log/syslog".tag string, @"log/syslog".s string, @"log/syslog".nl string) (? error) }
+	type @"log/syslog".Writer struct { @"log/syslog".priority @"log/syslog".Priority; @"log/syslog".tag string; @"log/syslog".hostname string; @"log/syslog".network string; @"log/syslog".raddr string; @"log/syslog".mu @"sync".Mutex; @"log/syslog".conn @"log/syslog".serverConn }
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Alert (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Close () (? error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Crit (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Debug (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Emerg (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Err (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Info (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Notice (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer) Warning (@"log/syslog".mÂ·3 string) (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·3 *@"log/syslog".Writer) Write (@"log/syslog".bÂ·4 []byte "esc:0x1") (? int, ? error)
+	func (@"log/syslog".wÂ·2 *@"log/syslog".Writer "esc:0x9") @"log/syslog".connect () (@"log/syslog".errÂ·1 error)
+	func (@"log/syslog".wÂ·3 *@"log/syslog".Writer "esc:0x9") @"log/syslog".write (@"log/syslog".pÂ·4 @"log/syslog".Priority, @"log/syslog".msgÂ·5 string) (? int, ? error)
+	func (@"log/syslog".wÂ·3 *@"log/syslog".Writer) @"log/syslog".writeAndRetry (@"log/syslog".pÂ·4 @"log/syslog".Priority, @"log/syslog".sÂ·5 string) (? int, ? error)
+	import io "io" // indirect
+	type @"io".Writer interface { Write(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"github.com/Sirupsen/logrus".Level uint8
+	func (@"github.com/Sirupsen/logrus".levelÂ·2 @"github.com/Sirupsen/logrus".Level) String () (? string)
+	type @"github.com/Sirupsen/logrus".Hook interface { Fire(? *@"github.com/Sirupsen/logrus".Entry) (? error); Levels() (? []@"github.com/Sirupsen/logrus".Level) }
+	type @"github.com/Sirupsen/logrus".LevelHooks map[@"github.com/Sirupsen/logrus".Level][]@"github.com/Sirupsen/logrus".Hook
+	func (@"github.com/Sirupsen/logrus".hooksÂ·1 @"github.com/Sirupsen/logrus".LevelHooks "esc:0x9") Add (@"github.com/Sirupsen/logrus".hookÂ·2 @"github.com/Sirupsen/logrus".Hook)
+	func (@"github.com/Sirupsen/logrus".hooksÂ·2 @"github.com/Sirupsen/logrus".LevelHooks "esc:0x9") Fire (@"github.com/Sirupsen/logrus".levelÂ·3 @"github.com/Sirupsen/logrus".Level, @"github.com/Sirupsen/logrus".entryÂ·4 *@"github.com/Sirupsen/logrus".Entry) (? error)
+	type @"github.com/Sirupsen/logrus".Formatter interface { Format(? *@"github.com/Sirupsen/logrus".Entry) (? []byte, ? error) }
+	type @"github.com/Sirupsen/logrus".Fields map[string]interface {}
+	type @"sync".Locker interface { Lock(); Unlock() }
+	type @"sync".syncSema struct { @"sync".lock uintptr; @"sync".head @"unsafe".Pointer; @"sync".tail @"unsafe".Pointer }
+	type @"sync".copyChecker uintptr
+	func (@"sync".cÂ·1 *@"sync".copyChecker) @"sync".check ()
+	type @"sync".Cond struct { L @"sync".Locker; @"sync".sema @"sync".syncSema; @"sync".waiters uint32; @"sync".checker @"sync".copyChecker }
+	func (@"sync".cÂ·1 *@"sync".Cond) Broadcast ()
+	func (@"sync".cÂ·1 *@"sync".Cond) Signal ()
+	func (@"sync".cÂ·1 *@"sync".Cond) Wait ()
+	func (@"sync".cÂ·1 *@"sync".Cond) @"sync".signalImpl (@"sync".allÂ·2 bool)
+	type @"io".pipe struct { @"io".rl @"sync".Mutex; @"io".wl @"sync".Mutex; @"io".l @"sync".Mutex; @"io".data []byte; @"io".rwait @"sync".Cond; @"io".wwait @"sync".Cond; @"io".rerr error; @"io".werr error }
+	func (@"io".pÂ·1 *@"io".pipe) @"io".rclose (@"io".errÂ·2 error)
+	func (@"io".pÂ·3 *@"io".pipe) @"io".read (@"io".bÂ·4 []byte "esc:0x1") (@"io".nÂ·1 int, @"io".errÂ·2 error)
+	func (@"io".pÂ·1 *@"io".pipe) @"io".wclose (@"io".errÂ·2 error)
+	func (@"io".pÂ·3 *@"io".pipe) @"io".write (@"io".bÂ·4 []byte) (@"io".nÂ·1 int, @"io".errÂ·2 error)
+	type @"io".PipeWriter struct { @"io".p *@"io".pipe }
+	func (@"io".wÂ·2 *@"io".PipeWriter "esc:0x9") Close () (? error)
+	func (@"io".wÂ·2 *@"io".PipeWriter "esc:0x9") CloseWithError (@"io".errÂ·3 error) (? error)
+	func (@"io".wÂ·3 *@"io".PipeWriter "esc:0x9") Write (@"io".dataÂ·4 []byte) (@"io".nÂ·1 int, @"io".errÂ·2 error)
+	type @"io".PipeReader struct { @"io".p *@"io".pipe }
+	func (@"io".rÂ·2 *@"io".PipeReader "esc:0x9") Close () (? error)
+	func (@"io".rÂ·2 *@"io".PipeReader "esc:0x9") CloseWithError (@"io".errÂ·3 error) (? error)
+	func (@"io".rÂ·3 *@"io".PipeReader "esc:0x9") Read (@"io".dataÂ·4 []byte "esc:0x1") (@"io".nÂ·1 int, @"io".errÂ·2 error)
+	type @"github.com/Sirupsen/logrus".Logger struct { Out @"io".Writer; Hooks @"github.com/Sirupsen/logrus".LevelHooks; Formatter @"github.com/Sirupsen/logrus".Formatter; Level @"github.com/Sirupsen/logrus".Level; @"github.com/Sirupsen/logrus".mu @"sync".Mutex }
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Debug (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Debugf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Debugln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Error (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Errorf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Errorln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Fatal (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Fatalf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Fatalln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Info (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Infof (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Infoln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Panic (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Panicf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Panicln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Print (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Printf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Println (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warn (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warnf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warning (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warningf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warningln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) Warnln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".loggerÂ·2 *@"github.com/Sirupsen/logrus".Logger) WithError (@"github.com/Sirupsen/logrus".errÂ·3 error) (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".loggerÂ·2 *@"github.com/Sirupsen/logrus".Logger) WithField (@"github.com/Sirupsen/logrus".keyÂ·3 string, @"github.com/Sirupsen/logrus".valueÂ·4 interface {}) (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".loggerÂ·2 *@"github.com/Sirupsen/logrus".Logger) WithFields (@"github.com/Sirupsen/logrus".fieldsÂ·3 @"github.com/Sirupsen/logrus".Fields "esc:0x9") (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".loggerÂ·2 *@"github.com/Sirupsen/logrus".Logger) Writer () (? *@"io".PipeWriter)
+	func (@"github.com/Sirupsen/logrus".loggerÂ·1 *@"github.com/Sirupsen/logrus".Logger) @"github.com/Sirupsen/logrus".writerScanner (@"github.com/Sirupsen/logrus".readerÂ·2 *@"io".PipeReader)
+	import time "time" // indirect
+	type @"time".zone struct { @"time".name string; @"time".offset int; @"time".isDST bool }
+	type @"time".zoneTrans struct { @"time".when int64; @"time".index uint8; @"time".isstd bool; @"time".isutc bool }
+	type @"time".Location struct { @"time".name string; @"time".zone []@"time".zone; @"time".tx []@"time".zoneTrans; @"time".cacheStart int64; @"time".cacheEnd int64; @"time".cacheZone *@"time".zone }
+	func (@"time".lÂ·2 *@"time".Location "esc:0x22") String () (? string)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".firstZoneUsed () (? bool)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x12") @"time".get () (? *@"time".Location)
+	func (@"time".lÂ·6 *@"time".Location "esc:0x32") @"time".lookup (@"time".secÂ·7 int64) (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".isDSTÂ·3 bool, @"time".startÂ·4 int64, @"time".endÂ·5 int64)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".lookupFirstZone () (? int)
+	func (@"time".lÂ·4 *@"time".Location "esc:0x1") @"time".lookupName (@"time".nameÂ·5 string "esc:0x1", @"time".unixÂ·6 int64) (@"time".offsetÂ·1 int, @"time".isDSTÂ·2 bool, @"time".okÂ·3 bool)
+	type @"time".Duration int64
+	func (@"time".dÂ·2 @"time".Duration) Hours () (? float64) { var @"time".hourÂ·3 @"time".Duration; ; @"time".hourÂ·3 = @"time".dÂ·2 / @"time".Duration(0x34630b8a000); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x34630b8a000); return float64(@"time".hourÂ·3) + float64(@"time".nsecÂ·4) * float64(8190022623310637111963488201822504381538623676021880892417778544696899264837610290203272971060556344039023584360473938041055625214280336402169897364226048p-553) }
+	func (@"time".dÂ·2 @"time".Duration) Minutes () (? float64) { var @"time".minÂ·3 @"time".Duration; ; @"time".minÂ·3 = @"time".dÂ·2 / @"time".Duration(0xdf8475800); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0xdf8475800); return float64(@"time".minÂ·3) + float64(@"time".nsecÂ·4) * float64(7678146209353722106395056769533233877065564876941352542109479049699919628723768656821910653339403201031675627614471533358284117434246264392176261853609984p-547) }
+	func (@"time".dÂ·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".dÂ·2) }
+	func (@"time".dÂ·2 @"time".Duration) Seconds () (? float64) { var @"time".secÂ·3 @"time".Duration; ; @"time".secÂ·3 = @"time".dÂ·2 / @"time".Duration(0x3b9aca00); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x3b9aca00); return float64(@"time".secÂ·3) + float64(@"time".nsecÂ·4) * float64(7198262071269114660816079141112770740375861891461678802759824945047098083990024106014198994535558872472104883612039846078596891298747423852523262413111296p-541) }
+	func (@"time".dÂ·2 @"time".Duration) String () (? string)
+	type @"time".Month int
+	func (@"time".mÂ·2 @"time".Month) String () (? string) { return @"time".months[@"time".mÂ·2 - @"time".Month(0x1)] }
+	type @"time".Weekday int
+	func (@"time".dÂ·2 @"time".Weekday) String () (? string) { return @"time".days[@"time".dÂ·2] }
+	type @"time".Time struct { @"time".sec int64; @"time".nsec int32; @"time".loc *@"time".Location }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Add (@"time".dÂ·3 @"time".Duration) (? @"time".Time) { @"time".tÂ·2.@"time".sec += int64(@"time".dÂ·3 / @"time".Duration(0x3b9aca00)); var @"time".nsecÂ·4 int32; ; @"time".nsecÂ·4 = int32(@"time".tÂ·2.@"time".nsec) + int32(@"time".dÂ·3 % @"time".Duration(0x3b9aca00)); if @"time".nsecÂ·4 >= int32(0x3b9aca00) { @"time".tÂ·2.@"time".sec++; @"time".nsecÂ·4 -= int32(0x3b9aca00) } else { if @"time".nsecÂ·4 < int32(0x0) { @"time".tÂ·2.@"time".sec--; @"time".nsecÂ·4 += int32(0x3b9aca00) } }; @"time".tÂ·2.@"time".nsec = @"time".nsecÂ·4; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") AddDate (@"time".yearsÂ·3 int, @"time".monthsÂ·4 int, @"time".daysÂ·5 int) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") After (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec > @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec > @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") AppendFormat (@"time".bÂ·3 []byte "esc:0x1a", @"time".layoutÂ·4 string "esc:0x9") (? []byte)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Before (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec < @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec < @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·4 @"time".Time "esc:0x1") Clock () (@"time".hourÂ·1 int, @"time".minÂ·2 int, @"time".secÂ·3 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x1") Date () (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Day () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Equal (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec == @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") Format (@"time".layoutÂ·3 string "esc:0x9") (? string)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") GobDecode (@"time".dataÂ·3 []byte "esc:0x1") (? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") GobEncode () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Hour () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") ISOWeek () (@"time".yearÂ·1 int, @"time".weekÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") In (@"time".locÂ·3 *@"time".Location "esc:0x12") (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") IsZero () (? bool) { return @"time".tÂ·2.@"time".sec == int64(0x0) && @"time".tÂ·2.@"time".nsec == int32(0x0) }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Local () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".Local; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Location () (? *@"time".Location) { var @"time".lÂ·3 *@"time".Location; ; @"time".lÂ·3 = @"time".tÂ·2.@"time".loc; if @"time".lÂ·3 == nil { @"time".lÂ·3 = @"time".UTC }; return @"time".lÂ·3 }
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") MarshalBinary () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalJSON () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalText () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Minute () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Month () (? @"time".Month)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Nanosecond () (? int) { return int(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Round (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Second () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") String () (? string)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Sub (@"time".uÂ·3 @"time".Time "esc:0x1") (? @"time".Duration)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Truncate (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") UTC () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".UTC; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Unix () (? int64) { return @"time".tÂ·2.@"time".sec + int64(-0xe7791f700) }
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") UnixNano () (? int64) { return (@"time".tÂ·2.@"time".sec + int64(-0xe7791f700)) * int64(0x3b9aca00) + int64(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalBinary (@"time".dataÂ·3 []byte "esc:0x1") (? error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalJSON (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalText (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Weekday () (? @"time".Weekday)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Year () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") YearDay () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x32") Zone () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") @"time".abs () (? uint64)
+	func (@"time".tÂ·5 @"time".Time "esc:0x1") @"time".date (@"time".fullÂ·6 bool) (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int, @"time".ydayÂ·4 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x32") @"time".locabs () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".absÂ·3 uint64)
+	import bytes "bytes" // indirect
+	type @"bytes".readOp int
+	type @"io".Reader interface { Read(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"bytes".Buffer struct { @"bytes".buf []byte; @"bytes".off int; @"bytes".runeBytes [4]byte; @"bytes".bootstrap [64]byte; @"bytes".lastRead @"bytes".readOp }
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x22") Bytes () (? []byte) { return @"bytes".bÂ·2.@"bytes".buf[@"bytes".bÂ·2.@"bytes".off:] }
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x1") Cap () (? int) { return cap(@"bytes".bÂ·2.@"bytes".buf) }
+	func (@"bytes".bÂ·1 *@"bytes".Buffer) Grow (@"bytes".nÂ·2 int)
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x1") Len () (? int) { return len(@"bytes".bÂ·2.@"bytes".buf) - @"bytes".bÂ·2.@"bytes".off }
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x22") Next (@"bytes".nÂ·3 int) (? []byte) { @"bytes".bÂ·2.@"bytes".lastRead = @"bytes".readOp(0x0); var @"bytes".mÂ·4 int; ; @"bytes".mÂ·4 = @"bytes".bÂ·2.Len(); if @"bytes".nÂ·3 > @"bytes".mÂ·4 { @"bytes".nÂ·3 = @"bytes".mÂ·4 }; var @"bytes".dataÂ·5 []byte; ; @"bytes".dataÂ·5 = @"bytes".bÂ·2.@"bytes".buf[@"bytes".bÂ·2.@"bytes".off:@"bytes".bÂ·2.@"bytes".off + @"bytes".nÂ·3]; @"bytes".bÂ·2.@"bytes".off += @"bytes".nÂ·3; if @"bytes".nÂ·3 > int(0x0) { @"bytes".bÂ·2.@"bytes".lastRead = @"bytes".readOp(0x2) }; return @"bytes".dataÂ·5 }
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x9") Read (@"bytes".pÂ·4 []byte "esc:0x1") (@"bytes".nÂ·1 int, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x1") ReadByte () (@"bytes".cÂ·1 byte, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x9") ReadBytes (@"bytes".delimÂ·4 byte) (@"bytes".lineÂ·1 []byte, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x9") ReadFrom (@"bytes".rÂ·4 @"io".Reader) (@"bytes".nÂ·1 int64, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·4 *@"bytes".Buffer "esc:0x1") ReadRune () (@"bytes".rÂ·1 rune, @"bytes".sizeÂ·2 int, @"bytes".errÂ·3 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x1") ReadString (@"bytes".delimÂ·4 byte) (@"bytes".lineÂ·1 string, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·1 *@"bytes".Buffer "esc:0x1") Reset ()
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x1") String () (? string) { if @"bytes".bÂ·2 == nil { return string("<nil>") }; return string(@"bytes".bÂ·2.@"bytes".buf[@"bytes".bÂ·2.@"bytes".off:]) }
+	func (@"bytes".bÂ·1 *@"bytes".Buffer "esc:0x1") Truncate (@"bytes".nÂ·2 int)
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x1") UnreadByte () (? error) { if @"bytes".bÂ·2.@"bytes".lastRead != @"bytes".readOp(0x1) && @"bytes".bÂ·2.@"bytes".lastRead != @"bytes".readOp(0x2) { return @"errors".New(string("bytes.Buffer: UnreadByte: previous operation was not a read")) }; @"bytes".bÂ·2.@"bytes".lastRead = @"bytes".readOp(0x0); if @"bytes".bÂ·2.@"bytes".off > int(0x0) { @"bytes".bÂ·2.@"bytes".off-- }; return nil }
+	func (@"bytes".bÂ·2 *@"bytes".Buffer "esc:0x1") UnreadRune () (? error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer) Write (@"bytes".pÂ·4 []byte "esc:0x9") (@"bytes".nÂ·1 int, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·2 *@"bytes".Buffer) WriteByte (@"bytes".cÂ·3 byte) (? error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer) WriteRune (@"bytes".rÂ·4 rune) (@"bytes".nÂ·1 int, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer) WriteString (@"bytes".sÂ·4 string "esc:0x9") (@"bytes".nÂ·1 int, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x9") WriteTo (@"bytes".wÂ·4 @"io".Writer) (@"bytes".nÂ·1 int64, @"bytes".errÂ·2 error)
+	func (@"bytes".bÂ·2 *@"bytes".Buffer) @"bytes".grow (@"bytes".nÂ·3 int) (? int)
+	func (@"bytes".bÂ·3 *@"bytes".Buffer "esc:0x22") @"bytes".readSlice (@"bytes".delimÂ·4 byte) (@"bytes".lineÂ·1 []byte, @"bytes".errÂ·2 error)
+	type @"github.com/Sirupsen/logrus".Entry struct { Logger *@"github.com/Sirupsen/logrus".Logger; Data @"github.com/Sirupsen/logrus".Fields; Time @"time".Time; Level @"github.com/Sirupsen/logrus".Level; Message string }
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Debug (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Debugf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Debugln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Error (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Errorf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Errorln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Fatal (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Fatalf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Fatalln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Info (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Infof (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Infoln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Panic (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Panicf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Panicln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Print (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Printf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Println (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·3 *@"github.com/Sirupsen/logrus".Entry) Reader () (? *@"bytes".Buffer, ? error)
+	func (@"github.com/Sirupsen/logrus".entryÂ·3 *@"github.com/Sirupsen/logrus".Entry) String () (? string, ? error)
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warn (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warnf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warning (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warningf (@"github.com/Sirupsen/logrus".formatÂ·2 string "esc:0x9", @"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warningln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") Warnln (@"github.com/Sirupsen/logrus".argsÂ·2 ...interface {} "esc:0x9")
+	func (@"github.com/Sirupsen/logrus".entryÂ·2 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") WithError (@"github.com/Sirupsen/logrus".errÂ·3 error) (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".entryÂ·2 *@"github.com/Sirupsen/logrus".Entry "esc:0x9") WithField (@"github.com/Sirupsen/logrus".keyÂ·3 string, @"github.com/Sirupsen/logrus".valueÂ·4 interface {}) (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".entryÂ·2 *@"github.com/Sirupsen/logrus".Entry "esc:0xa") WithFields (@"github.com/Sirupsen/logrus".fieldsÂ·3 @"github.com/Sirupsen/logrus".Fields "esc:0x9") (? *@"github.com/Sirupsen/logrus".Entry)
+	func (@"github.com/Sirupsen/logrus".entryÂ·1 @"github.com/Sirupsen/logrus".Entry) @"github.com/Sirupsen/logrus".log (@"github.com/Sirupsen/logrus".levelÂ·2 @"github.com/Sirupsen/logrus".Level, @"github.com/Sirupsen/logrus".msgÂ·3 string)
+	func (@"github.com/Sirupsen/logrus".entryÂ·2 *@"github.com/Sirupsen/logrus".Entry "esc:0x1") @"github.com/Sirupsen/logrus".sprintlnn (@"github.com/Sirupsen/logrus".argsÂ·3 ...interface {} "esc:0x9") (? string)
+	type @"".SyslogHook struct { Writer *@"log/syslog".Writer; SyslogNetwork string; SyslogRaddr string }
+	func (@"".hookÂ·2 *@"".SyslogHook "esc:0x9") Fire (@"".entryÂ·3 *@"github.com/Sirupsen/logrus".Entry) (? error)
+	func (@"".hookÂ·2 *@"".SyslogHook "esc:0x1") Levels () (? []@"github.com/Sirupsen/logrus".Level) { return @"github.com/Sirupsen/logrus".AllLevels }
+	func @"".NewSyslogHook (@"".networkÂ·3 string, @"".raddrÂ·4 string, @"".priorityÂ·5 @"log/syslog".Priority, @"".tagÂ·6 string) (? *@"".SyslogHook, ? error)
+	func @"".init ()
+	var @"time".months [12]string
+	var @"time".days [7]string
+	var @"time".Local *@"time".Location
+	var @"time".UTC *@"time".Location
+	import errors "errors" // indirect
+	func @"errors".New (@"errors".textÂ·2 string) (? error) { return (&@"errors".errorString{ @"errors".s:@"errors".textÂ·2 }) }
+	var @"github.com/Sirupsen/logrus".AllLevels []@"github.com/Sirupsen/logrus".Level
+	type @"errors".errorString struct { @"errors".s string }
+	func (@"errors".eÂ·2 *@"errors".errorString "esc:0x22") Error () (? string) { return @"errors".eÂ·2.@"errors".s }
+
+$$
+ _go_.o          0           0     0     644     20901     `
+go object darwin amd64 go1.6.2 X:none
+
+!
+  go13ld
+fmt.a8github.com/Sirupsen/logrus.alog/syslog.aos.a ş "".NewSyslogHook  À  ÀeH‹%    H;a†€  Hƒìp1ÛH‰œ$¸   H‰œ$À   H‹\$xH‰$H‹œ$€   H‰\$H‹œ$ˆ   H‰\$H‹œ$   H‰\$H‹œ$˜   H‰\$ H‹œ$    H‰\$(H‹œ$¨   H‰\$0è    H‹\$8H‰\$PH‹\$@H‰\$`H‹\$HH‰\$hH    H‰$è    H‹D$H‰D$XHƒø „Å   H‹l$P€=     …›   H‰(H‹¬$€   H‰hH‹l$x€=     ueH‰hH‹¬$   H‰h H‹¬$ˆ   €=     u+H‰hH‰„$°   H‹\$`H‰œ$¸   H‹\$hH‰œ$À   HƒÄpÃL@L‰$H‰l$è    H‹D$XëÀL@L‰$H‰l$è    H‹D$Xë†H‰$H‰l$è    H‹D$XéPÿÿÿ‰ é4ÿÿÿè    écşÿÿÌÌÌ
+      ‚  log/syslog.Dial   Ì  $type."".SyslogHook   Ş  "runtime.newobject   œ (runtime.writeBarrier   Ş (runtime.writeBarrier     (runtime.writeBarrier      .runtime.writebarrierptr   Ò  .runtime.writebarrierptr   ü  .runtime.writebarrierptr   ¨  0runtime.morestack_noctxt    à  "".autotmp_0000 /&type.*"".SyslogHook "".err type.error "".w ?.type.*log/syslog.Writer "".~r5 €type.error "".~r4 p&type.*"".SyslogHook "".tag Ptype.string "".priority @0type.log/syslog.Priority "".raddr  type.string "".network  type.string  àªßàQß   .)zğ  €.¡Q TgclocalsÂ·6ae577a3493b7cf6eb6f2caf92987713 TgclocalsÂ·d54a84780be5c66c777edd104728de18   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş*"".(*SyslogHook).Fire  €  €eH‹%    HD$ÀH;A†  HìÀ   1ÛH‰œ$Ø   H‰œ$à   H‹œ$Ğ   H‰$è    H‹´$È   H‹T$H‰T$XH‹L$H‰L$`H‹|$H‹\$ H‰\$pH‰|$hHƒÿ „ƒ  H‹    H‰D$P1íH9è„0  1ÛH‰œ$˜   H‰œ$    Hœ$˜   Hƒû „  HÇ„$°      HÇ„$¸      H‰œ$¨   H‰<$H‹\$pH‰\$è    H‹L$H‹D$H‹œ$¨   H‰Œ$ˆ   H‰H‰„$   €=     …‰   H‰CH‹    H‹D$PH‰D$xH‰$H‰Œ$€   H‰L$H    H‰\$HÇD$   H‹œ$¨   H‰\$ H‹œ$°   H‰\$(H‹œ$¸   H‰\$0è    H‹\$hH‰œ$Ø   H‹\$pH‰œ$à   HÄÀ   ÃLCL‰$H‰D$è    édÿÿÿ‰éôşÿÿH    H‰$H    H‰\$H    H‰\$è    H‹|$hH‹\$H‰\$Pé”şÿÿH‹œ$Ğ   ¶k(@€ı‡Ô   @€ı u8H‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ã@€ıu8H‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ã@€ıu8H‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ã1ÛH‰œ$Ø   H‰œ$à   HÄÀ   Ã@€ıu8H‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ã@€ıu8H‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ã@€ı…`ÿÿÿH‹.H‰,$H‰T$H‰L$è    H‹L$H‹D$ H‰Œ$Ø   H‰„$à   HÄÀ   Ãè    éOüÿÿÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌ(
+      |  Tgithub.com/Sirupsen/logrus.(*Entry).String   ş  4go.itab.*os.File.io.Writer   Ì  runtime.convI2E   ¢ (runtime.writeBarrier   Æ  os.Stderr   Š  Hgo.string."Unable to read entry, %v"   ş  fmt.Fprintf   æ  .runtime.writebarrierptr   Œ  type.*os.File   ¢  type.io.Writer   º  4go.itab.*os.File.io.Writer   Î   runtime.typ2Itab   Ú  2log/syslog.(*Writer).Crit   Ö	  2log/syslog.(*Writer).Crit   Ò
+  0log/syslog.(*Writer).Err   ‚  8log/syslog.(*Writer).Warning   ş  2log/syslog.(*Writer).Info   ‚  4log/syslog.(*Writer).Debug   Ğ  0runtime.morestack_noctxt   @€  "".autotmp_0012 o"type.interface {} "".autotmp_0011 O(type.[1]interface {} "".autotmp_0008 /&type.[]interface {} "".autotmp_0007 ßtype.*uint8 "".autotmp_0006  type.error "".autotmp_0005  type.error "".autotmp_0004  type.error "".autotmp_0003  type.error "".autotmp_0002  type.error "".err ¯type.error "".line Ïtype.string "".~r1  type.error "".entry Ltype.*github.com/Sirupsen/logrus.Entry "".hook  &type.*"".SyslogHook j€…ÿ€­ÿ€=ÿ€=ÿ€ÿ€=ÿ€=ÿ€Aÿ À X81<‡"Z88888
+8% $ =¨™44F” TgclocalsÂ·304f1a7ece42768e76e94191b15e0406 TgclocalsÂ·136a978db467548ace1a7efef88a7f7c   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş."".(*SyslogHook).Levels  `  `1ÛH‹    H‰\$H‹    H‰\$H‹    H‰\$ ÃÌÌÌÌÌÌÌÌÌ
+  Hgithub.com/Sirupsen/logrus.AllLevels   " Hgithub.com/Sirupsen/logrus.AllLevels   :  Hgithub.com/Sirupsen/logrus.AllLevels   @   "".~r0 Ntype.[]github.com/Sirupsen/logrus.Level "".hook  &type.*"".SyslogHook 0 0 
+j.  TgclocalsÂ·2fccd208efe70893f9ac8d682812ae72 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş"".init  À  ÀeH‹%    H;avC¶    €û t¶    €ûuÃè    Æ    è    è    è    è    Æ    Ãè    ë§ÌÌÌÌÌÌÌ
+      $  "".initdoneÂ·   <  "".initdoneÂ·   R  "runtime.throwinit   b "".initdoneÂ·   n  fmt.init   x  >github.com/Sirupsen/logrus.init   ‚  log/syslog.init   Œ  os.init   ˜ "".initdoneÂ·   ¦  0runtime.morestack_noctxt        ` ` n` 
+ (8 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş0type..hash."".SyslogHook     eH‹%    H;a†¯   Hƒì H‹\$(H‰$Hƒ<$ „‹   H‹\$0H‰\$HÇD$   è    H‹D$H‹\$(H‰$Hƒ<$ tUHƒ$H‰D$0H‰D$è    H‹D$H‹\$(H‰$Hƒ<$ t#Hƒ$H‰D$0H‰D$è    H‹\$H‰\$8HƒÄ Ã‰%    ëÔ‰%    ë¢‰%    éiÿÿÿè    é4ÿÿÿÌÌÌÌ
+
+      ~  runtime.memhash   Ğ  runtime.strhash   ¢  runtime.strhash   †  0runtime.morestack_noctxt   0@  "".~r2  type.uintptr "".h type.uintptr "".p  &type.*"".SyslogHook @Œ?@? Ğ Ğ  >’ TgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş,type..eq."".SyslogHook À  ÀeH‹%    H;a†ù   HƒìHH‹L$PH‹D$XH‹H‹(H9ët
+ÆD$` HƒÄHÃH‹qH‹IH‹PH‹@H9Á…³   H‰t$8H‰4$H‰L$@H‰L$H‰T$(H‰T$H‰D$0H‰D$è    ¶\$ €û t}H‹\$PHƒû tnH‹SH‹C H‹\$XHƒû tWH‹sH‹K H9Èu@H‰T$(H‰$H‰D$0H‰D$H‰t$8H‰t$H‰L$@H‰L$è    ¶\$ €û t
+ÆD$`HƒÄHÃÆD$` HƒÄHÃ‰ë¥‰ëÆD$` HƒÄHÃè    éêşÿÿÌÌÌÌÌÌÌÌÌÌ
+      î   runtime.eqstring   °   runtime.eqstring   š  0runtime.morestack_noctxt   0  "".autotmp_0019  type.string "".autotmp_0018  type.string "".autotmp_0017 ?type.string "".autotmp_0016 type.string "".~r2  type.bool "".q &type.*"".SyslogHook "".p  &type.*"".SyslogHook 8¹	      vª TgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a TgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş4type..hash.[1]interface {}     eH‹%    H;avpHƒì(H‹L$81ÀHÇD$   H‹l$H9è}DH‰D$ H‹\$0Hƒû t>H‰ÅHÁåHëH‰$H‰L$8H‰L$è    H‹L$H‹D$ HÿÀH‹l$H9è|¼H‰L$@HƒÄ(Ã‰ë¾è    éwÿÿÿÌÌÌÌÌÌÌ
+      ¬  (runtime.nilinterhash   €  0runtime.morestack_noctxt   0P  
+"".autotmp_0021 type.int "".autotmp_0020 type.int "".~r2  type.uintptr "".h type.uintptr "".p  *type.*[1]interface {} PgOPO   
+ U; TgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goş0type..eq.[1]interface {} à  àeH‹%    H;a†Î   HƒìX1ÀHÇD$(   H‹l$(H9è’   H‰D$0H‹\$hHƒû „–   H‰ÅHÁåHëH‹H‹sH‹\$`Hƒû tvH‰ÅHÁåHëH‹H‹SH9ÈuVH‰D$8H‰$H‰T$@H‰T$H‰L$HH‰L$H‰t$PH‰t$è    ¶\$ €û t H‹D$0HÿÀH‹l$(H9èŒnÿÿÿÆD$pHƒÄXÃÆD$p HƒÄXÃ‰ë†‰écÿÿÿè    éÿÿÿÌÌÌÌÌ
+      ¼  runtime.efaceeq   Ä  0runtime.morestack_noctxt   0°  "".autotmp_0025 ?"type.interface {} "".autotmp_0024 "type.interface {} "".autotmp_0023 _type.int "".autotmp_0022 Otype.int "".~r2  type.bool "".q *type.*[1]interface {} "".p  *type.*[1]interface {} ,°´¯°	¯°¯ ğ ğ  S TgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a TgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440   æ/Users/avadhutp/gocode/src/github.com/avadhutp/phileas/vendor/src/github.com/Sirupsen/logrus/hooks/syslog/syslog.goşTgclocalsÂ·d54a84780be5c66c777edd104728de18 (  (                 şTgclocalsÂ·6ae577a3493b7cf6eb6f2caf92987713 (  (   
+   %   %   %    ş>4go.itab.*os.File.io.Writer     şPgo.string.hdr."Unable to read entry, %v"                       Hgo.string."Unable to read entry, %v"   şHgo.string."Unable to read entry, %v" @  2Unable to read entry, %v  şTgclocalsÂ·136a978db467548ace1a7efef88a7f7c 0  0                  şTgclocalsÂ·304f1a7ece42768e76e94191b15e0406 0  0                   şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·2fccd208efe70893f9ac8d682812ae72             şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           ş>"".initdoneÂ·  type.uint8   ş&"".NewSyslogHookÂ·f               "".NewSyslogHook   ş0"".(*SyslogHook).FireÂ·f              *"".(*SyslogHook).Fire   ş4"".(*SyslogHook).LevelsÂ·f              ."".(*SyslogHook).Levels   ş"".initÂ·f              "".init   şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2             şTgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440              şTgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a             ş8type..hashfunc."".SyslogHook              0type..hash."".SyslogHook   ş4type..eqfunc."".SyslogHook              ,type..eq."".SyslogHook   ş.type..alg."".SyslogHook                        8type..hashfunc."".SyslogHook     4type..eqfunc."".SyslogHook   ş"runtime.gcbits.01    şRgo.string.hdr."*logrus_syslog.SyslogHook"                       Jgo.string."*logrus_syslog.SyslogHook"   şJgo.string."*logrus_syslog.SyslogHook" @  4*logrus_syslog.SyslogHook  şˆgo.string.hdr."func(*logrus_syslog.SyslogHook, *logrus.Entry) error"             4          €go.string."func(*logrus_syslog.SyslogHook, *logrus.Entry) error"   ş€go.string."func(*logrus_syslog.SyslogHook, *logrus.Entry) error" p  jfunc(*logrus_syslog.SyslogHook, *logrus.Entry) error  ş„type.func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error                   2‚¸ë 3                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  ˆgo.string.hdr."func(*logrus_syslog.SyslogHook, *logrus.Entry) error"   p  –go.weak.type.*func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error   ğ „type.func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error   À „type.func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error   ğ  &type.*"".SyslogHook   €  Ltype.*github.com/Sirupsen/logrus.Entry     type.error   şügo.typelink.func(*logrus_syslog.SyslogHook, *logrus.Entry) error	func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error              „type.func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error   ş<go.string.hdr."[]logrus.Level"                       4go.string."[]logrus.Level"   ş4go.string."[]logrus.Level"    []logrus.Level  şNtype.[]github.com/Sirupsen/logrus.Level                 Ec¡Ş                                                 
+0   runtime.algarray   @  "runtime.gcbits.01   P  <go.string.hdr."[]logrus.Level"   p  `go.weak.type.*[]github.com/Sirupsen/logrus.Level   €  Jtype.github.com/Sirupsen/logrus.Level   şzgo.typelink.[]logrus.Level	[]github.com/Sirupsen/logrus.Level              Ntype.[]github.com/Sirupsen/logrus.Level   ş|go.string.hdr."func(*logrus_syslog.SyslogHook) []logrus.Level"             .          tgo.string."func(*logrus_syslog.SyslogHook) []logrus.Level"   ştgo.string."func(*logrus_syslog.SyslogHook) []logrus.Level" `  ^func(*logrus_syslog.SyslogHook) []logrus.Level  şxtype.func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level                 ?„¨ 3                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  |go.string.hdr."func(*logrus_syslog.SyslogHook) []logrus.Level"   p  Šgo.weak.type.*func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level   ğ xtype.func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level   À€ xtype.func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level   ğ  &type.*"".SyslogHook   €  Ntype.[]github.com/Sirupsen/logrus.Level   şägo.typelink.func(*logrus_syslog.SyslogHook) []logrus.Level	func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level              xtype.func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level   ş(go.string.hdr."Fire"                        go.string."Fire"   ş go.string."Fire"   
+Fire  şRgo.string.hdr."func(*logrus.Entry) error"                       Jgo.string."func(*logrus.Entry) error"   şJgo.string."func(*logrus.Entry) error" @  4func(*logrus.Entry) error  şdtype.func(*github.com/Sirupsen/logrus.Entry) error                 Â²,‰ 3                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  Rgo.string.hdr."func(*logrus.Entry) error"   p  vgo.weak.type.*func(*github.com/Sirupsen/logrus.Entry) error   ğ dtype.func(*github.com/Sirupsen/logrus.Entry) error   À€ dtype.func(*github.com/Sirupsen/logrus.Entry) error   ğ  Ltype.*github.com/Sirupsen/logrus.Entry   €  type.error   ş¦go.typelink.func(*logrus.Entry) error	func(*github.com/Sirupsen/logrus.Entry) error              dtype.func(*github.com/Sirupsen/logrus.Entry) error   ş,go.string.hdr."Levels"                       $go.string."Levels"   ş$go.string."Levels"   Levels  şJgo.string.hdr."func() []logrus.Level"                       Bgo.string."func() []logrus.Level"   şBgo.string."func() []logrus.Level" 0  ,func() []logrus.Level  ş\type.func() []github.com/Sirupsen/logrus.Level €  €              l%‰¦ 3                                                                                                      0€  runtime.algarray   @  "runtime.gcbits.01   P  Jgo.string.hdr."func() []logrus.Level"   p  ngo.weak.type.*func() []github.com/Sirupsen/logrus.Level   ğ \type.func() []github.com/Sirupsen/logrus.Level   Àğ \type.func() []github.com/Sirupsen/logrus.Level   ğ  Ntype.[]github.com/Sirupsen/logrus.Level   ş–go.typelink.func() []logrus.Level	func() []github.com/Sirupsen/logrus.Level              \type.func() []github.com/Sirupsen/logrus.Level   ş&type.*"".SyslogHook                    ¤5× 6                                                                                                                                                                                      "0   runtime.algarray   @  "runtime.gcbits.01   P  Rgo.string.hdr."*logrus_syslog.SyslogHook"   p  8go.weak.type.**"".SyslogHook   €  $type."".SyslogHook   ` &type.*"".SyslogHook   °à &type.*"".SyslogHook   à  (go.string.hdr."Fire"   €  dtype.func(*github.com/Sirupsen/logrus.Entry) error     „type.func(*"".SyslogHook, *github.com/Sirupsen/logrus.Entry) error      *"".(*SyslogHook).Fire   °  *"".(*SyslogHook).Fire   À  ,go.string.hdr."Levels"   à  \type.func() []github.com/Sirupsen/logrus.Level   ğ  xtype.func(*"".SyslogHook) []github.com/Sirupsen/logrus.Level   €  ."".(*SyslogHook).Levels     ."".(*SyslogHook).Levels   ş"runtime.gcbits.0b    şPgo.string.hdr."logrus_syslog.SyslogHook"                       Hgo.string."logrus_syslog.SyslogHook"   şHgo.string."logrus_syslog.SyslogHook" @  2logrus_syslog.SyslogHook  ş,go.string.hdr."Writer"                       $go.string."Writer"   ş$go.string."Writer"   Writer  ş:go.string.hdr."SyslogNetwork"                       2go.string."SyslogNetwork"   ş2go.string."SyslogNetwork"    SyslogNetwork  ş6go.string.hdr."SyslogRaddr"                       .go.string."SyslogRaddr"   ş.go.string."SyslogRaddr"    SyslogRaddr  ş4go.string.hdr."SyslogHook"             
+          ,go.string."SyslogHook"   ş,go.string."SyslogHook"    SyslogHook  şngo.string.hdr."github.com/Sirupsen/logrus/hooks/syslog"             '          fgo.string."github.com/Sirupsen/logrus/hooks/syslog"   şfgo.string."github.com/Sirupsen/logrus/hooks/syslog" P  Pgithub.com/Sirupsen/logrus/hooks/syslog  ş"go.importpath."".             '          fgo.string."github.com/Sirupsen/logrus/hooks/syslog"   ş$type."".SyslogHook  ğ  ğ(               ËjY0                                                                                                                                                                                                                             0  .type..alg."".SyslogHook   @  "runtime.gcbits.0b   P  Pgo.string.hdr."logrus_syslog.SyslogHook"   p  &type.*"".SyslogHook   €° $type."".SyslogHook   °  ,go.string.hdr."Writer"   Ğ  .type.*log/syslog.Writer   €  :go.string.hdr."SyslogNetwork"      type.string   Ğ  6go.string.hdr."SyslogRaddr"   ğ  type.string   `  $type."".SyslogHook      4go.string.hdr."SyslogHook"   °  "go.importpath."".   Àğ $type."".SyslogHook   ş"runtime.gcbits.03    ş8go.string.hdr."interface {}"                       0go.string."interface {}"   ş0go.string."interface {}"    interface {}  ş"type.interface {} °  °              çW                                                                  
+0€  runtime.algarray   @  "runtime.gcbits.03   P  8go.string.hdr."interface {}"   p  4go.weak.type.*interface {}   €° "type.interface {}   ş<go.string.hdr."[]interface {}"                       4go.string."[]interface {}"   ş4go.string."[]interface {}"    []interface {}  ş&type.[]interface {}                 p“ê/                                                 
+0   runtime.algarray   @  "runtime.gcbits.01   P  <go.string.hdr."[]interface {}"   p  8go.weak.type.*[]interface {}   €  "type.interface {}   şRgo.typelink.[]interface {}	[]interface {}              &type.[]interface {}   şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2             şTgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440              şTgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a             ş<type..hashfunc.[1]interface {}              4type..hash.[1]interface {}   ş8type..eqfunc.[1]interface {}              0type..eq.[1]interface {}   ş2type..alg.[1]interface {}                        <type..hashfunc.[1]interface {}     8type..eqfunc.[1]interface {}   ş>go.string.hdr."[1]interface {}"                       6go.string."[1]interface {}"   ş6go.string."[1]interface {}"     [1]interface {}  ş(type.[1]interface {} °  °              P‘[ú                                                                0  2type..alg.[1]interface {}   @  "runtime.gcbits.03   P  >go.string.hdr."[1]interface {}"   p  :go.weak.type.*[1]interface {}   €  "type.interface {}     &type.[]interface {}   şVgo.typelink.[1]interface {}	[1]interface {}              (type.[1]interface {}   ş@go.string.hdr."*[1]interface {}"                       8go.string."*[1]interface {}"   ş8go.string."*[1]interface {}" 0  "*[1]interface {}  ş*type.*[1]interface {}                 ¿¨5 6                                                
+0   runtime.algarray   @  "runtime.gcbits.01   P  @go.string.hdr."*[1]interface {}"   p  <go.weak.type.**[1]interface {}   €  (type.[1]interface {}   ş&go.string.hdr."fmt"                       go.string."fmt"   şgo.string."fmt"   fmt  ş$go.importpath.fmt.                       go.string."fmt"   ş$go.string.hdr."os"                       go.string."os"   şgo.string."os"   os  ş"go.importpath.os.                       go.string."os"   şTgo.string.hdr."github.com/Sirupsen/logrus"                       Lgo.string."github.com/Sirupsen/logrus"   şLgo.string."github.com/Sirupsen/logrus" @  6github.com/Sirupsen/logrus  şRgo.importpath.github.com/Sirupsen/logrus.                       Lgo.string."github.com/Sirupsen/logrus"   ş4go.string.hdr."log/syslog"             
+          ,go.string."log/syslog"   ş,go.string."log/syslog"    log/syslog  ş2go.importpath.log/syslog.             
+          ,go.string."log/syslog"   ş6type..hash."".SyslogHookÂ·f              0type..hash."".SyslogHook   ş2type..eq."".SyslogHookÂ·f              ,type..eq."".SyslogHook   ş:type..hash.[1]interface {}Â·f              4type..hash.[1]interface {}   ş6type..eq.[1]interface {}Â·f              0type..eq.[1]interface {}   ÿÿgo13ld 

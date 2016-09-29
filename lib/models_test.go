@@ -35,8 +35,8 @@ func TestGetDB(t *testing.T) {
 		dbSingularTable = oldDBSingularTable
 	}()
 
-	mockDB := gorm.DB{}
-	gormOpen = func(string, ...interface{}) (gorm.DB, error) {
+	mockDB := &gorm.DB{}
+	gormOpen = func(string, ...interface{}) (*gorm.DB, error) {
 		return mockDB, nil
 	}
 
@@ -47,7 +47,7 @@ func TestGetDB(t *testing.T) {
 
 	actual := GetDB(getCfg())
 
-	assert.Equal(t, &mockDB, actual)
+	assert.Equal(t, mockDB, actual)
 	assert.True(t, tableSingularity)
 }
 
@@ -60,8 +60,8 @@ func TestGetDBErrorHandling(t *testing.T) {
 		dbSingularTable = oldDBSingularTable
 	}()
 
-	gormOpen = func(string, ...interface{}) (gorm.DB, error) {
-		return gorm.DB{}, errors.New("Test func")
+	gormOpen = func(string, ...interface{}) (*gorm.DB, error) {
+		return &gorm.DB{}, errors.New("Test func")
 	}
 
 	dbSingularTable = func(db *gorm.DB, flag bool) {}

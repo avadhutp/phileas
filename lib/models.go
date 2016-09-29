@@ -55,7 +55,7 @@ func GetDB(cfg *Cfg) *gorm.DB {
 		panic(err)
 	}
 
-	dbSingularTable(&db, true)
+	dbSingularTable(db, true)
 
-	return &db
+	return db
 }

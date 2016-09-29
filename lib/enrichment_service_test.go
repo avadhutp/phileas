@@ -10,11 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/avadhutp/phileas/vendor"
-
-	"github.com/jasonwinn/geocoder"
-
+	"github.com/avadhutp/phileas/helpers"
 	testdb "github.com/erikstmartin/go-testdb"
+	"github.com/jasonwinn/geocoder"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +25,7 @@ func init() {
 	db, _ := gorm.Open("testdb", "")
 	cfg := &Cfg{}
 
-	sut = NewEnrichmentService(cfg, &db)
+	sut = NewEnrichmentService(cfg, db)
 }
 
 func stubQuery(r string) {
@@ -156,7 +154,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 				insertCalled = false
 			}
 
-			return vendor.NewTestResult(1, 0), nil
+			return helpers.NewTestResult(1, 0), nil
 		})
 
 		r := `
@@ -164,7 +162,7 @@ func TestEnrichGooglePlacesIDs(t *testing.T) {
 		`
 		stubQuery(r)
 		db, _ := gorm.Open("testdb", "")
-		sut.db = &db
+		sut.db = db
 
 		oldEsEnrichGooglePlacesIDs := esEnrichGooglePlacesIDs
 		oldTimeSleep := timeSleep
@@ -221,7 +219,7 @@ func TestEnrichLocation(t *testing.T) {
 				insertCalled = true
 			}
 
-			return vendor.NewTestResult(1, 0), nil
+			return helpers.NewTestResult(1, 0), nil
 		})
 
 		r := `
@@ -230,7 +228,7 @@ func TestEnrichLocation(t *testing.T) {
 		stubQuery(r)
 
 		db, _ := gorm.Open("testdb", "")
-		sut.db = &db
+		sut.db = db
 
 		oldEsEnrichLocation := esEnrichLocation
 		oldTimeSleep := timeSleep
