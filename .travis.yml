@@ -12,8 +12,10 @@ before_install:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/golang/lint/golint
     - go get github.com/GeertJohan/fgt
+    - go get github.com/mattn/gom
 
 script: 
+    - make deps
     - make lint
     - make test
 
