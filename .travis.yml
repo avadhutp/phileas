@@ -1,8 +1,7 @@
 language: go
 
 go:
-    - 1.5.1
-    - tip
+    - 1.6
 
 before_install:
     - go get -t github.com/avadhutp/phileas/command
