@@ -17,7 +17,7 @@ before_install:
 script: 
     - make deps
     - make lint
-    - make test
+    - ./test.sh
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
