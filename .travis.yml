@@ -15,7 +15,7 @@ before_install:
 
 script: 
     - make lint
-    - ./test.sh
+    - make test
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
