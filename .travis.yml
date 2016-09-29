@@ -14,7 +14,6 @@ before_install:
     - go get github.com/GeertJohan/fgt
 
 script: 
-    - make deps
     - make lint
     - ./test.sh
 
