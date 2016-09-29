@@ -14,3 +14,5 @@ gom 'github.com/kpawlik/geojson', :commit => '03fc5b389cd1027cb3f5ce4aa97f0e6af6
 gom 'github.com/stretchr/testify/assert'
 gom 'golang.org/x/net/context'
 gom 'googlemaps.github.io/maps'
+gom 'github.com/GeertJohan/fgt'
+gom 'github.com/golang/lint/golint'

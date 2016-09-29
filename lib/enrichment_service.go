@@ -20,7 +20,8 @@ const (
 )
 
 const (
-	MAX_RADIUS_FOR_PLACES_SEARCH = 500
+	// MaxRadiusForPlacesSearch Form geo-boxes with limiting radius, in miles
+	MaxRadiusForPlacesSearch = 500
 )
 
 var (
@@ -85,6 +86,7 @@ func (es *EnrichmentService) EnrichLocation() {
 	esEnrichLocation(es)
 }
 
+// EnrichGooglePlacesIDs Add google place IDSs
 func (es *EnrichmentService) EnrichGooglePlacesIDs() {
 	var locs []Location
 	es.db.Limit(enrichmentLimit).Where("google_places_id IS NULL").Find(&locs)
@@ -168,7 +170,7 @@ func newRadarSearch(l *Location) *maps.RadarSearchRequest {
 	r := &maps.RadarSearchRequest{}
 
 	r.Keyword = l.Name
-	r.Radius = MAX_RADIUS_FOR_PLACES_SEARCH
+	r.Radius = MaxRadiusForPlacesSearch
 	r.Location = &maps.LatLng{
 		Lat: l.Lat,
 		Lng: l.Long,

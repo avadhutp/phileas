@@ -10,12 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jasonwinn/geocoder"
-
-	"github.com/kpawlik/geojson"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jasonwinn/geocoder"
 	"github.com/jinzhu/gorm"
+	"github.com/kpawlik/geojson"
 )
 
 const (
@@ -27,6 +25,7 @@ const (
 		</div>`
 )
 
+// CountryInfo struct to store country obj
 type CountryInfo struct {
 	name string
 	geo  geocoder.LatLng
@@ -118,13 +117,13 @@ func (pe *PhileasAPI) statsJSON(c *gin.Context) {
 	var totalLocations int
 	var gpEnriched int
 	var gpUnenriched int
-	var gpWithoutId int
+	var gpWithoutID int
 
 	pe.db.Model(&Location{}).Count(&totalLocations)
 
 	pe.db.Model(&Location{}).Where("google_places_id IS NOT NULL and google_places_id != ?", "").Count(&gpEnriched)
 	pe.db.Model(&Location{}).Where("google_places_id IS NULL").Count(&gpUnenriched)
-	pe.db.Model(&Location{}).Where("google_places_id = ?", "").Count(&gpWithoutId)
+	pe.db.Model(&Location{}).Where("google_places_id = ?", "").Count(&gpWithoutID)
 
 	fmt.Printf("All nice %d", totalLocations)
 
@@ -134,7 +133,7 @@ func (pe *PhileasAPI) statsJSON(c *gin.Context) {
 			"google_places": map[string]interface{}{
 				"enriched":         gpEnriched,
 				"un_enriched":      gpUnenriched,
-				"without_place_id": gpWithoutId,
+				"without_place_id": gpWithoutID,
 			},
 		},
 	}

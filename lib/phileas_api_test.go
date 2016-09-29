@@ -98,19 +98,19 @@ func TestStatsJSON(t *testing.T) {
 }
 
 func TestCountriesJSON(t *testing.T) {
-	selectSql := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
+	selectSQL := "SELECT  `id`, `country`, count(*) FROM \"location\"   GROUP BY country HAVING (`country` != '')"
 	selectCols := []string{"id", "country", "count"}
 	selectResult := `
 	1, UK, 5
 	`
-	testdb.StubQuery(selectSql, testdb.RowsFromCSVString(selectCols, selectResult))
+	testdb.StubQuery(selectSQL, testdb.RowsFromCSVString(selectCols, selectResult))
 
-	countSql := `SELECT  count(*) FROM "locations"  WHERE (country != ?)`
+	countSQL := `SELECT  count(*) FROM "locations"  WHERE (country != ?)`
 	countCols := []string{"count"}
 	countResult := `
 	5
 	`
-	testdb.StubQuery(countSql, testdb.RowsFromCSVString(countCols, countResult))
+	testdb.StubQuery(countSQL, testdb.RowsFromCSVString(countCols, countResult))
 
 	expected := `{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"country":"","id":1,"size":100,"total":5}}]}`
 
