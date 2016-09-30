@@ -65,7 +65,13 @@ func (i *InstaAPI) SaveLikes() {
 func (i *InstaAPI) Backfill(maxLikeID string) {
 	logger.Infof("Running backfill for %s", maxLikeID)
 
-	media, after, _ := getLikedMedia(i.client.Users, &instagram.Parameters{MaxID: maxLikeID})
+	media, after, err := getLikedMedia(i.client.Users, &instagram.Parameters{MaxID: maxLikeID})
+
+	if err != nil {
+		logErr(err)
+		panic("Had to stop because instagram API error-ed.")
+	}
+
 	afterURL, _ := url.Parse(after.NextURL)
 	maxLikeID = afterURL.Query().Get("max_like_id")
 
@@ -88,17 +94,17 @@ func (i *InstaAPI) saveMedia(m *instagram.Media) {
 	var e Entry
 	i.db.
 		Where(Entry{
-		VendorID: m.ID,
-	}).
+			VendorID: m.ID,
+		}).
 		FirstOrCreate(&e, Entry{
-		Type:       "instagram",
-		VendorID:   m.ID,
-		Thumbnail:  m.Images.Thumbnail.URL,
-		URL:        m.Link,
-		Caption:    getCaption(m),
-		Timestamp:  m.CreatedTime,
-		LocationID: loc.ID,
-	})
+			Type:       "instagram",
+			VendorID:   m.ID,
+			Thumbnail:  m.Images.Thumbnail.URL,
+			URL:        m.Link,
+			Caption:    getCaption(m),
+			Timestamp:  m.CreatedTime,
+			LocationID: loc.ID,
+		})
 }
 
 func (i *InstaAPI) saveLocation(m *instagram.Media) *Location {
